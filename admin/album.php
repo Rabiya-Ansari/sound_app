@@ -18,6 +18,7 @@ if (isset($_GET['delete'])) {
 
     echo "<script>window.location.href='album.php';</script>";
     exit;
+
 }
 
 // add logics

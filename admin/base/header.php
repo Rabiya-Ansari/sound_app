@@ -21,7 +21,6 @@ if ($admin_id > 0) {
     echo "Admin ID not set in session";
 }
 
-echo "Admin Name: $admin_name";
 ?>
 
 
