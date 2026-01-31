@@ -62,7 +62,8 @@
                             <!-- <a href="#"><i class="fa fa-facebook"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>
                             <a href="#"><i class="fa fa-instagram"></i></a> -->
-                            <a href="/sound/admin/registration.php">Login / SignUp</a>
+                            <a href="/sound/login.php">Login</a>
+                            <a href="/sound/admin/registration.php">SignUp</a>
                         </div>
                     </div>
                 </div>
