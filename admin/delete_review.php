@@ -1,6 +1,3 @@
-<?php
-include "base/auth_check.php";
-?>
 
 <?php
 include 'auth.php';

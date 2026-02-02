@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Css Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="css/barfiller.css" type="text/css">
@@ -59,6 +60,8 @@
                             </ul>
                         </nav>
                         <div class="header__right__social">
+                            <!-- Search Icon -->
+                            <a href="#" class="search-icon"><i class="fas fa-search"></i></a>
                             <a href="/sound/login.php">Login</a>
                             <a href="/sound/admin/registration.php">SignUp</a>
                         </div>

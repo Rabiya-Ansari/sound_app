@@ -57,6 +57,8 @@ $musics = mysqli_query($con, "
     LEFT JOIN albums ON albums.id = musics.album_id
     ORDER BY musics.id DESC
 ");
+
+$years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC");
 ?>
 
 
@@ -110,7 +112,14 @@ $musics = mysqli_query($con, "
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label>Release Year</label>
-                                <input type="number" name="year" class="form-control">
+                                <select name="year" class="form-select" required>
+                                    <option value="">Select Year</option>
+                                    <?php
+                                    while ($y = mysqli_fetch_assoc($years_res)) {
+                                        echo "<option value='{$y['release_year']}'>{$y['release_year']}</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
 
                             <div class="col-md-6 mb-3">

@@ -1,27 +1,31 @@
 <?php
+include 'auth.php';
 include __DIR__ . '/../../config/db_connection.php';
 
-$admin_id = intval($_SESSION['user_id'] ?? 0);
-$admin_name = "";
-
-if ($admin_id > 0) {
-    $res = mysqli_query($con, "SELECT * FROM users WHERE id=$admin_id");
-    
-    if (!$res) {
-        die("Query failed: " . mysqli_error($con));
-    }
-
-    if (mysqli_num_rows($res) > 0) {
-        $admin = mysqli_fetch_assoc($res);
-        $admin_name = htmlspecialchars($admin['name']);
-    } else {
-        echo "No user found with ID: $admin_id";
-    }
-} else {
-    echo "Admin ID not set in session";
+/* ===== AUTH CHECK ===== */
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: /sound/login.php");
+    exit;
 }
 
+$admin_id   = (int) $_SESSION['user_id'];
+$admin_name = "";
+
+/* ===== FETCH ADMIN DATA ===== */
+$stmt = mysqli_prepare($con, "SELECT name FROM users WHERE id = ?");
+mysqli_stmt_bind_param($stmt, "i", $admin_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if ($row = mysqli_fetch_assoc($result)) {
+    $admin_name = htmlspecialchars($row['name']);
+} else {
+    session_destroy();
+    header("Location: /sound/login.php");
+    exit;
+}
 ?>
+
 
 
 
@@ -93,7 +97,7 @@ if ($admin_id > 0) {
                                 <img src="/images/logo-dark.png" alt="dark logo">
                             </span>
                             <span class="logo-sm">
-                                <img src="/images/logo-sm.png" alt="small logo">
+                                <img src="/sound/admin/images/users/logo-sm.png" alt="small logo">
                             </span>
                         </a>
                     </div>
@@ -161,16 +165,6 @@ if ($admin_id > 0) {
                             <a href="#" class="dropdown-item">
                                 <i class="ri-account-circle-line fs-18 align-middle me-1"></i>
                                 <span>My Account</span>
-                            </a>
-
-                            <a href="profile.php" class="dropdown-item">
-                                <i class="ri-settings-4-line fs-18 align-middle me-1"></i>
-                                <span>Settings</span>
-                            </a>
-
-                            <a href="auth-lock-screen.html" class="dropdown-item">
-                                <i class="ri-lock-password-line fs-18 align-middle me-1"></i>
-                                <span>Lock Screen</span>
                             </a>
 
                             <a href="#" class="dropdown-item" onclick="window.location.href='/sound/admin/logout.php';">
@@ -253,6 +247,7 @@ if ($admin_id > 0) {
                                 <li><a href="artist.php">Artists</a></li>
                                 <li><a href="genre.php">Genre</a></li>
                                 <li><a href="languages.php">Languages</a></li>
+                                <li><a href="years.php">Years</a></li>
                             </ul>
                         </div>
                     </li>
@@ -285,10 +280,7 @@ if ($admin_id > 0) {
                         <div class="collapse" id="sidebarExtendedUI">
                             <ul class="side-nav-second-level">
                                 <li>
-                                    <a href="extended-portlets.html">Add User</a>
-                                </li>
-                                <li>
-                                    <a href="extended-scrollbar.html">View Users</a>
+                                    <a href="/sound/admin/users.php">View Users</a>
                                 </li>
                             </ul>
                         </div>
@@ -303,13 +295,7 @@ if ($admin_id > 0) {
                         <div class="collapse" id="sidebarIcons">
                             <ul class="side-nav-second-level">
                                 <li>
-                                    <a href="icons-remixicons.html">Home Page Content</a>
-                                </li>
-                                <li>
-                                    <a href="icons-bootstrap.html">About Website</a>
-                                </li>
-                                <li>
-                                    <a href="icons-mdi.html">Banners / Images</a>
+                                    <a href="icons-remixicons.html">Upcoming Events</a>
                                 </li>
                             </ul>
                         </div>
@@ -325,10 +311,7 @@ if ($admin_id > 0) {
                         <div class="collapse" id="sidebarCharts">
                             <ul class="side-nav-second-level">
                                 <li>
-                                    <a href="charts-apex.html">General Settings</a>
-                                </li>
-                                <li>
-                                    <a href="charts-sparklines.html">Backup / Restore Database</a>
+                                    <a href="charts-apex.html">Edit Profile</a>
                                 </li>
                             </ul>
                         </div>

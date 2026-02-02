@@ -35,7 +35,8 @@ if (isset($_POST['add_video'])) {
     $tmp = $_FILES['video_file']['tmp_name'];
 
     $folder = "../media/";
-    if (!is_dir($folder)) mkdir($folder, 0777, true);
+    if (!is_dir($folder))
+        mkdir($folder, 0777, true);
 
     $new_name = time() . "_" . $file;
 
@@ -58,6 +59,7 @@ $videos = mysqli_query($con, "
     LEFT JOIN languages ON languages.id = videos.language_id
     ORDER BY videos.id DESC
 ");
+$years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC");
 ?>
 
 <?php include './base/header.php'; ?>
@@ -107,10 +109,14 @@ $videos = mysqli_query($con, "
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label>Release Year</label>
-                                <input type="number" name="year" class="form-control">
-                            </div>
+                            <select name="year" class="form-select" required>
+                                <option value="">Select Year</option>
+                                <?php
+                                while ($y = mysqli_fetch_assoc($years_res)) {
+                                    echo "<option value='{$y['release_year']}'>{$y['release_year']}</option>";
+                                }
+                                ?>
+                            </select>
                             <div class="col-md-6 mb-3">
                                 <label>Video File</label>
                                 <input type="file" name="video_file" class="form-control" required>
@@ -141,26 +147,32 @@ $videos = mysqli_query($con, "
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = 1; while ($v = mysqli_fetch_assoc($videos)) { ?>
+                            <?php $i = 1;
+                            while ($v = mysqli_fetch_assoc($videos)) { ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
                                     <td>
                                         <?php $path = "../media/" . $v['video_file']; ?>
                                         <?php if (!empty($v['video_file']) && file_exists($path)): ?>
-                                            <video width="150" controls>
+                                            <video width="150" style="cursor:pointer" onclick="openVideoModal('<?= $path ?>')"
+                                                muted preload="metadata">
                                                 <source src="<?= $path ?>" type="video/mp4">
+                                                Your browser does not support the video tag.
                                             </video>
                                         <?php else: ?>
                                             <span class="text-muted">No video</span>
                                         <?php endif; ?>
                                     </td>
+
+
                                     <td><?= htmlspecialchars($v['title']) ?></td>
                                     <td><?= $v['artist_name'] ?? '-' ?></td>
                                     <td><?= $v['genre_name'] ?? '-' ?></td>
                                     <td><?= $v['language_name'] ?? '-' ?></td>
                                     <td><?= $v['release_year'] ?></td>
                                     <td>
-                                        <a href="?delete=<?= $v['id'] ?>" onclick="return confirm('Delete this video?')" class="btn btn-sm btn-danger">
+                                        <a href="?delete=<?= $v['id'] ?>" onclick="return confirm('Delete this video?')"
+                                            class="btn btn-sm btn-danger">
                                             🗑 Delete
                                         </a>
                                     </td>
@@ -174,5 +186,36 @@ $videos = mysqli_query($con, "
         </div>
     </div>
 </div>
+<div class="modal fade" id="videoModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🎬 Video Player</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <video id="modalVideo" width="100%" controls autoplay>
+                    <source src="" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+<?php include './base/footer.php' ?>
+<script>
+    function openVideoModal(videoPath) {
+        let video = document.getElementById('modalVideo');
+        video.src = videoPath;
+        video.load();
 
-<?php include './base/footer.php'; ?>
+        let modal = new bootstrap.Modal(document.getElementById('videoModal'));
+        modal.show();
+    }
+
+    document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
+        let video = document.getElementById('modalVideo');
+        video.pause();
+        video.currentTime = 0;
+        video.src = "";
+    });
+</script>
