@@ -25,42 +25,42 @@ if (isset($_GET['delete'])) {
 ===================== */
 if (isset($_POST['add_music'])) {
 
-    $title = mysqli_real_escape_string($con, $_POST['title']);
+    $title  = mysqli_real_escape_string($con, $_POST['title']);
     $artist = (int) $_POST['artist'];
-    $album = (int) $_POST['album'];
-    $year = (int) $_POST['year'];
+    $year   = (int) $_POST['year'];
 
     $file = $_FILES['music_file']['name'];
-    $tmp = $_FILES['music_file']['tmp_name'];
+    $tmp  = $_FILES['music_file']['tmp_name'];
 
     $folder = "../media/";
-    if (!is_dir($folder))
+    if (!is_dir($folder)) {
         mkdir($folder, 0777, true);
+    }
 
     $new_name = time() . "_" . $file;
 
     if (move_uploaded_file($tmp, $folder . $new_name)) {
         mysqli_query($con, "
-            INSERT INTO musics (title, artist_id, album_id, release_year, music_file)
-            VALUES ('$title','$artist','$album','$year','$new_name')
+            INSERT INTO musics (title, artist_id, release_year, music_file)
+            VALUES ('$title', '$artist', '$year', '$new_name')
         ");
         header("Location: music.php");
         exit;
     }
 }
 
-//fetch logics
+/* =====================
+   FETCH DATA
+===================== */
 $musics = mysqli_query($con, "
-    SELECT musics.*, artists.artist_name, albums.album_name
+    SELECT musics.*, artists.artist_name
     FROM musics
     LEFT JOIN artists ON artists.id = musics.artist_id
-    LEFT JOIN albums ON albums.id = musics.album_id
     ORDER BY musics.id DESC
 ");
 
 $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC");
 ?>
-
 
 <?php include "./base/header.php"; ?>
 
@@ -68,6 +68,7 @@ $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC"
     <div class="content">
         <div class="container-fluid mt-4">
 
+            <!-- ADD MUSIC -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h4>➕ Add New Music</h4>
@@ -96,22 +97,7 @@ $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC"
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label>Album</label>
-                                <select name="album" class="form-select">
-                                    <option value="0">Select Album</option>
-                                    <?php
-                                    $al = mysqli_query($con, "SELECT * FROM albums");
-                                    while ($r = mysqli_fetch_assoc($al)) {
-                                        echo "<option value='{$r['id']}'>{$r['album_name']}</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label>Release Year</label>
+                                <label>Year</label>
                                 <select name="year" class="form-select" required>
                                     <option value="">Select Year</option>
                                     <?php
@@ -121,20 +107,21 @@ $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC"
                                     ?>
                                 </select>
                             </div>
+                        </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label>Music File</label>
-                                <input type="file" name="music_file" class="form-control" required>
-                            </div>
+                        <div class="mb-3">
+                            <label>Music File</label>
+                            <input type="file" name="music_file" class="form-control" required>
                         </div>
 
                         <button name="add_music" class="btn btn-primary">
                             Add Music
                         </button>
-
                     </form>
                 </div>
             </div>
+
+            <!-- MUSIC LIST -->
             <div class="card">
                 <div class="card-header">
                     <h4>🎵 All Songs</h4>
@@ -147,7 +134,6 @@ $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC"
                                 <th>#</th>
                                 <th>Title</th>
                                 <th>Artist</th>
-                                <th>Album</th>
                                 <th>Year</th>
                                 <th>Play</th>
                                 <th>Action</th>
@@ -161,7 +147,6 @@ $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC"
                                     <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($m['title']) ?></td>
                                     <td><?= $m['artist_name'] ?? '-' ?></td>
-                                    <td><?= $m['album_name'] ?? '-' ?></td>
                                     <td><?= $m['release_year'] ?></td>
                                     <td>
                                         <audio controls style="width:180px">
@@ -169,8 +154,9 @@ $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC"
                                         </audio>
                                     </td>
                                     <td>
-                                        <a href="?delete=<?= $m['id'] ?>" onclick="return confirm('Delete this song?')"
-                                            class="btn btn-sm btn-danger">
+                                        <a href="?delete=<?= $m['id'] ?>"
+                                           onclick="return confirm('Delete this song?')"
+                                           class="btn btn-sm btn-danger">
                                             🗑
                                         </a>
                                     </td>

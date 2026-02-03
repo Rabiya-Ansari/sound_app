@@ -29,7 +29,7 @@ $reviews = mysqli_query($con, "
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if(mysqli_num_rows($reviews) > 0): ?>
+                    <?php if (mysqli_num_rows($reviews) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($reviews)): ?>
                             <tr>
                                 <td class="fw-semibold"><?= htmlspecialchars($row['name']); ?></td>
@@ -54,9 +54,8 @@ $reviews = mysqli_query($con, "
                                 </td>
 
                                 <td>
-                                    <a href="delete_review.php?id=<?= $row['id']; ?>"
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Delete this review?')">
+                                    <a href="delete_review.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this review?')">
                                         <i class="ri-delete-bin-line"></i> Delete
                                     </a>
                                 </td>

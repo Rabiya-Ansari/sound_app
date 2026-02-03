@@ -295,7 +295,7 @@ if ($row = mysqli_fetch_assoc($result)) {
                         <div class="collapse" id="sidebarIcons">
                             <ul class="side-nav-second-level">
                                 <li>
-                                    <a href="icons-remixicons.html">Upcoming Events</a>
+                                    <a href="/sound/admin/all_events.php">Upcoming Events</a>
                                 </li>
                             </ul>
                         </div>

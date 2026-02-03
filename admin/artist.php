@@ -30,7 +30,7 @@ if (isset($_POST['save_artist'])) {
         mysqli_query($con, "INSERT INTO artists (artist_name) VALUES ('$name')");
     }
 
-    header("Location: artists.php");
+    header("Location: artist.php");
     exit;
 }
 

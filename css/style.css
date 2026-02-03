@@ -2935,7 +2935,7 @@ ol {
 
 /* testimonial */
 .testimonial__item {
-    background: #0c0c0c;
+	background: linear-gradient(#5c00ce,#0c0c0c);
     padding: 20px;
     transition: all 0.3s;
 }

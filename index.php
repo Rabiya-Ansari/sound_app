@@ -1,7 +1,32 @@
 <?php
+include 'config/db_connection.php';
 include("./base/header.php");
+$reviews = mysqli_query($con, "
+    SELECT 
+        reviews.review,
+        reviews.rating,
+        users.name
+    FROM reviews
+    JOIN users ON reviews.user_id = users.id
+    WHERE reviews.rating > 0
+    ORDER BY reviews.id DESC
+    LIMIT 6
+");
 
 
+
+/* passed events auto update */
+mysqli_query($con, "
+    UPDATE events 
+    SET status='passed' 
+    WHERE event_date < NOW()
+");
+
+/* fetch events */
+$events = mysqli_query($con, "
+    SELECT * FROM events 
+    ORDER BY event_date ASC
+");
 ?>
 <!-- Hero Section Begin -->
 <section class="hero spad set-bg" data-setbg="img/hero-bg.png">
@@ -35,65 +60,51 @@ include("./base/header.php");
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="event__slider owl-carousel">
-                <div class="col-lg-4">
-                    <div class="event__item">
-                        <div class="event__item__pic set-bg" data-setbg="img/events/event-1.jpg">
-                            <div class="tag-date">
-                                <span>Dec 15, 2019</span>
+
+                <?php while ($row = mysqli_fetch_assoc($events)) { ?>
+
+                    <div class="col-lg-4">
+                        <div class="event__item">
+
+                            <div class="event__item__pic"
+                                style="background-image:url('../media/<?php echo $row['image']; ?>')">
+
+                                <div class="tag-date">
+                                    <?php if ($row['status'] == 'upcoming') { ?>
+                                        <span class="countdown" data-date="<?php echo $row['event_date']; ?>">
+                                            Loading...
+                                        </span>
+                                    <?php } else { ?>
+                                        <span class="passed">Passed</span>
+                                    <?php } ?>
+                                </div>
+
                             </div>
-                        </div>
-                        <div class="event__item__text">
-                            <h4>David Guetta Miami Ultra</h4>
-                            <p><i class="fa fa-map-marker"></i> Funkhaus Berlin, Berlin, Germany</p>
+
+                            <div class="event__item__text">
+                                <h4>
+                                    <?php echo $row['title']; ?>
+                                </h4>
+                                <p>
+                                    <i class="fa fa-map-marker"></i>
+                                    <?php echo $row['location']; ?>
+                                </p>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="event__item">
-                        <div class="event__item__pic set-bg" data-setbg="img/events/event-2.jpg">
-                            <div class="tag-date">
-                                <span>Dec 15, 2019</span>
-                            </div>
-                        </div>
-                        <div class="event__item__text">
-                            <h4>David Guetta Miami Ultra</h4>
-                            <p><i class="fa fa-map-marker"></i> Funkhaus Berlin, Berlin, Germany</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="event__item">
-                        <div class="event__item__pic set-bg" data-setbg="img/events/event-3.jpg">
-                            <div class="tag-date">
-                                <span>Dec 15, 2019</span>
-                            </div>
-                        </div>
-                        <div class="event__item__text">
-                            <h4>David Guetta Miami Ultra</h4>
-                            <p><i class="fa fa-map-marker"></i> Funkhaus Berlin, Berlin, Germany</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="event__item">
-                        <div class="event__item__pic set-bg" data-setbg="img/events/event-2.jpg">
-                            <div class="tag-date">
-                                <span>Dec 15, 2019</span>
-                            </div>
-                        </div>
-                        <div class="event__item__text">
-                            <h4>David Guetta Miami Ultra</h4>
-                            <p><i class="fa fa-map-marker"></i> Funkhaus Berlin, Berlin, Germany</p>
-                        </div>
-                    </div>
-                </div>
+
+                <?php } ?>
+
             </div>
         </div>
     </div>
 </section>
 <!-- Event Section End -->
+
 
 <!-- About Section Begin -->
 <section class="about spad">
@@ -467,76 +478,52 @@ include("./base/header.php");
 
         <div class="row">
 
-            <!-- Testimonial Item -->
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="testimonial__item">
-                    <div class="testimonial__item__pic set-bg" data-setbg="img/testimonial/user-1.jpg">
-                        <span class="quote"><i class="fa fa-quote-right"></i></span>
-                    </div>
-                    <div class="testimonial__item__text">
-                        <h4>Ayesha Khan</h4>
-                        <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-half-o"></i>
-                        </div>
-                        <p>
-                            Amazing platform! I love how easily I can find music and leave reviews.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <?php if (mysqli_num_rows($reviews) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($reviews)): ?>
 
-            <!-- Testimonial Item -->
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="testimonial__item">
-                    <div class="testimonial__item__pic set-bg" data-setbg="img/testimonial/user-2.jpg">
-                        <span class="quote"><i class="fa fa-quote-right"></i></span>
-                    </div>
-                    <div class="testimonial__item__text">
-                        <h4>Ali Raza</h4>
-                        <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <p>
-                            Clean design, fast loading, and very user-friendly dashboard.
-                        </p>
-                    </div>
-                </div>
-            </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="testimonial__item">
+                            <div class="testimonial__item__text">
 
-            <!-- Testimonial Item -->
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="testimonial__item">
-                    <div class="testimonial__item__pic set-bg" data-setbg="img/testimonial/user-3.jpg">
-                        <span class="quote"><i class="fa fa-quote-right"></i></span>
-                    </div>
-                    <div class="testimonial__item__text">
-                        <h4>Usman Ahmed</h4>
-                        <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-half-o"></i>
-                            <i class="fa fa-star-o"></i>
+                                <h4>
+                                    <?= htmlspecialchars($row['name']) ?>
+                                </h4>
+
+                                <!-- Rating -->
+                                <div class="rating">
+                                    <?php
+                                    $rating = (int) $row['rating'];
+
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        if ($i <= $rating) {
+                                            echo '<i class="fa fa-star"></i>';
+                                        } else {
+                                            echo '<i class="fa fa-star-o"></i>';
+                                        }
+                                    }
+                                    ?>
+                                </div>
+
+                                <p>
+                                    <?= htmlspecialchars($row['review']) ?>
+                                </p>
+
+                            </div>
                         </div>
-                        <p>
-                            Best music review website I’ve used so far. Highly recommended!
-                        </p>
                     </div>
+
+                <?php endwhile; ?>
+            <?php else: ?>
+                <div class="col-12 text-center">
+                    <p>No reviews yet.</p>
                 </div>
-            </div>
+            <?php endif; ?>
 
         </div>
     </div>
 </section>
 <!-- Testimonial Section End -->
+
 
 
 <!-- Countdown Section Begin -->
@@ -578,3 +565,28 @@ include("./base/header.php");
 <?php
 include("./base/footer.php");
 ?>
+
+
+
+<script>
+    document.querySelectorAll('.countdown').forEach(el => {
+        let end = new Date(el.dataset.date).getTime();
+
+        setInterval(() => {
+            let now = new Date().getTime();
+            let diff = end - now;
+
+            if (diff <= 0) {
+                el.innerHTML = "Passed";
+                el.classList.add("passed");
+                return;
+            }
+
+            let d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            let m = Math.floor((diff / (1000 * 60)) % 60);
+
+            el.innerHTML = d + "d " + h + "h " + m + "m";
+        }, 1000);
+    });
+</script>
