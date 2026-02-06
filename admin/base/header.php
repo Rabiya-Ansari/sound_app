@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-$admin_id   = (int) $_SESSION['user_id'];
+$admin_id = (int) $_SESSION['user_id'];
 $admin_name = "";
 
 /* ===== FETCH ADMIN DATA ===== */
@@ -119,10 +119,6 @@ if ($row = mysqli_fetch_assoc($result)) {
 
                 <ul class="topbar-menu d-flex align-items-center gap-3">
                     <li class="dropdown d-lg-none">
-                        <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button"
-                            aria-haspopup="false" aria-expanded="false">
-                            <i class="ri-search-line fs-22"></i>
-                        </a>
                         <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
                             <form class="p-3">
                                 <input type="search" class="form-control" placeholder="Search ..."
@@ -162,7 +158,7 @@ if ($row = mysqli_fetch_assoc($result)) {
                                 <h6 class="text-overflow m-0">Welcome !</h6>
                             </div>
 
-                            <a href="#" class="dropdown-item">
+                            <a href="/sound/admin/profile.php" class="dropdown-item">
                                 <i class="ri-account-circle-line fs-18 align-middle me-1"></i>
                                 <span>My Account</span>
                             </a>
@@ -300,24 +296,6 @@ if ($row = mysqli_fetch_assoc($result)) {
                             </ul>
                         </div>
                     </li>
-
-                    <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarCharts" aria-expanded="false"
-                            aria-controls="sidebarCharts" class="side-nav-link">
-                            <i class="ri-settings-3-line"></i>
-                            <span> Settings </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarCharts">
-                            <ul class="side-nav-second-level">
-                                <li>
-                                    <a href="charts-apex.html">Edit Profile</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-
 
                 </ul>
                 <!--- End Sidemenu -->

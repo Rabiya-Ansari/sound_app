@@ -6,7 +6,7 @@ include '../config/db_connection.php';
 if (isset($_GET['delete'])) {
     $delete_id = (int) $_GET['delete'];
     mysqli_query($con, "DELETE FROM genres WHERE id=$delete_id");
-    header("Location: genres.php");
+    header("Location: genre.php");
     exit;
 }
 
@@ -30,7 +30,7 @@ if (isset($_POST['save_genre'])) {
         mysqli_query($con, "INSERT INTO genres (genre_name) VALUES ('$name')");
     }
 
-    header("Location: genres.php");
+    header("Location: genre.php");
     exit;
 }
 

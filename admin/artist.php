@@ -6,7 +6,7 @@ include '../config/db_connection.php';
 if (isset($_GET['delete'])) {
     $delete_id = (int) $_GET['delete'];
     mysqli_query($con, "DELETE FROM artists WHERE id=$delete_id");
-    header("Location: artists.php");
+    header("Location: artist.php");
     exit;
 }
 
