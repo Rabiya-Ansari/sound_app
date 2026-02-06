@@ -26,7 +26,7 @@ if (isset($_POST['update_profile'])) {
     $old_password = trim($_POST['old_password'] ?? '');
     $new_password = trim($_POST['new_password'] ?? '');
 
-    // Update password only if fields are filled
+
     if (!empty($old_password) || !empty($new_password)) {
         if (sha1($old_password) !== $admin['password']) {
             $error = "Old password is incorrect";
@@ -41,7 +41,6 @@ if (isset($_POST['update_profile'])) {
             mysqli_stmt_bind_param($stmt, "sssi", $name, $email, $hashed_password, $admin_id);
         }
     } else {
-        // Update only name & email
         $stmt = mysqli_prepare(
             $con,
             "UPDATE users SET name = ?, email = ? WHERE id = ? AND role = 'admin'"

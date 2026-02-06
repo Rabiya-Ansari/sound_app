@@ -142,10 +142,11 @@ if ($row = mysqli_fetch_assoc($result)) {
                     <li class="dropdown">
                         <a class="nav-link dropdown-toggle arrow-none nav-user" data-bs-toggle="dropdown" href="#"
                             role="button" aria-haspopup="false" aria-expanded="false">
+
                             <span class="account-user-avatar">
-                                <img src="/sound/admin/images/users/avatar-2.jpg" alt="user-image" width="32"
-                                    class="rounded-circle">
+                                <i class="ri-user-3-line fs-3"></i>
                             </span>
+
                             <span class="d-lg-block d-none">
                                 <h5 class="my-0 fw-normal">
                                     <?= $admin_name ?>

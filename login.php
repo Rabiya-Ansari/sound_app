@@ -31,63 +31,129 @@ if (isset($_POST['login'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .login-card { width: 360px; background: #fff; border-radius: 14px; box-shadow: 0 20px 45px rgba(0,0,0,0.25); overflow: hidden; }
-        .login-header { background: #185a9d; color: #fff; padding: 22px; text-align: center; }
-        .login-header h3 { margin: 0; font-weight: 600; }
-        .login-header small { opacity: 0.9; }
-        .login-body { padding: 28px; }
-        .form-control { padding: 12px; border-radius: 8px; }
-        .form-control:focus { box-shadow: none; border-color: #185a9d; }
-        .btn-login { background: #185a9d; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 500; }
-        .btn-login:hover { background: #134e87; }
-        .login-footer { text-align: center; margin-top: 18px; font-size: 14px; }
-        .login-footer a { color: #185a9d; text-decoration: none; font-weight: 500; }
-        .forgot-text { display: block; text-align: center; margin-top: 10px; color: #185a9d; font-weight: 500; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/login.css">
 </head>
+
 <body>
 
-<div class="login-card">
-
-    <div class="login-header">
-        <h3>Welcome Back</h3>
-        <small>Please login to continue</small>
-    </div>
-
-    <div class="login-body">
-
-        <?php if(isset($error)): ?>
-            <div class="alert alert-danger text-center"><?= $error ?></div>
-        <?php endif; ?>
-
-        <!-- LOGIN FORM -->
-        <form method="POST">
-            <div class="mb-3">
-                <label class="form-label">Email Address</label>
-                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+    <div class="container-fluid login-wrapper">
+        <div class="row h-100">
+            <!-- LEFT VISUAL -->
+            <div class="col-md-7 d-none d-md-flex align-items-center login-visual">
+                <div class="triangle-rain"></div>
+                <div class="visual-content d-flex align-items-center gap-5">
+                    <img src="./img/login.png" alt="" class="img-fluid" style="max-width:400px;">
+                    <div>
+                        <h1 class="mb-1 fw-bold">Feel The Beats</h1>
+                        <p class="mb-0 medium opacity-75">
+                            Log in and immerse yourself in a world of sound.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+
+            <!-- RIGHT FORM -->
+            <div class="col-12 col-md-5 login-form-area">
+                <div class="login-card">
+
+                    <div class="text-center mb-4">
+                        <h3>Welcome Back</h3>
+                        <small class="text-light opacity-75">Pick up where you left off</small>
+                    </div>
+
+                    <?php if (isset($error)): ?>
+                        <div class="alert alert-danger text-center py-2">
+                            <?= $error ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="POST">
+
+                        <div class="mb-3">
+                            <label class="form-label small">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small">Password</label>
+                            <div class="input-group">
+                                <input type="password" id="password" name="password" class="form-control" required>
+                                <span class="input-group-text" onclick="togglePassword()">
+                                    <i class="ri-eye-off-line" id="eyeIcon"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="submit" name="login" class="btn btn-login w-100">
+                            Login
+                        </button>
+
+                    </form>
+
+                    <div class="login-links text-center mt-3">
+                        <a href="#">Forgot password?</a>
+                        <br>
+                        <span class="text-light">No account?</span>
+                        <a href="/sound/admin/registration.php">Register</a>
+                    </div>
+                </div>
             </div>
-            <button type="submit" name="login" class="btn btn-login w-100">Login</button>
-        </form>
-
-        <span class="forgot-text">Forgot Password?</span>
-
-        <div class="login-footer">
-            Don’t have an account? <a href="/sound/admin/registration.php">Register</a>
         </div>
-
     </div>
 
-</div>
+    <script>
+        const container = document.querySelector('.triangle-rain');
+        const MAX_ON_SCREEN = 90;
+        const SPAWN_RATE = 120;
 
+        function createTriangle() {
+            const t = document.createElement('div');
+            t.className = 'triangle';
+
+            const size = Math.random() * 18 + 8;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 5 + 8;
+            const opacity = Math.random() * 0.6 + 0.3;
+
+            t.style.width = size + 'px';
+            t.style.height = size + 'px';
+            t.style.left = left + '%';
+            t.style.opacity = opacity;
+            t.style.animationDuration = duration + 's';
+            container.appendChild(t);
+
+            setTimeout(() => {
+                t.remove();
+            }, duration * 1500);
+        }
+        /* ===== Infinite loop ===== */
+        setInterval(() => {
+            if (container.childElementCount < MAX_ON_SCREEN) {
+                createTriangle();
+            }
+        }, SPAWN_RATE);
+
+        function togglePassword() {
+            const pass = document.getElementById("password");
+            const icon = document.getElementById("eyeIcon");
+            if (pass.type === "password") {
+                pass.type = "text";
+                icon.classList.replace("ri-eye-off-line", "ri-eye-line");
+            } else {
+                pass.type = "password";
+                icon.classList.replace("ri-eye-line", "ri-eye-off-line");
+            }
+        }
+    </script>
 </body>
+
 </html>
