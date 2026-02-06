@@ -14,7 +14,7 @@ $events = mysqli_query($con, "SELECT * FROM events ORDER BY event_date DESC");
 
 <?php include "./base/header.php"; ?>
 
-<div class="container-fluid">
+<div class="container-fluid mt-4">
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-2">
