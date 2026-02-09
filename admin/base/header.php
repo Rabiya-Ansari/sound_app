@@ -52,6 +52,9 @@ if ($row = mysqli_fetch_assoc($result)) {
     <!-- Theme Config Js -->
     <script src="/sound/admin/js/config.js"></script>
 
+    <!-- SweetAlert2 CSS  -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
     <!-- App css -->
     <link href="/sound/admin/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
 
@@ -65,9 +68,6 @@ if ($row = mysqli_fetch_assoc($result)) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
         integrity="sha512-XcIsjKMcuVe0Ucj/xgIXQnytNwBttJbNjltBV18IOnru2lDPe9KRRyvCXw6Y5H415vbBLRm8+q6fmLUU7DfO6Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
-
 </head>
 
 <body>

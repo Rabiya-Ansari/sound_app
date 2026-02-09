@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'config/db_connection.php';
 include("./base/header.php");
 $reviews = mysqli_query($con, "
@@ -323,11 +324,13 @@ $tracks = mysqli_query($con, "
 </section>
 <!-- Youtube Section End -->
 
+
+
 <!-- Testimonial Section Begin -->
 <section class="testimonial spad">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
+        <div class="row mb-4">
+            <div class="col-lg-12 text-center">
                 <div class="section-title">
                     <h2>Testimonials</h2>
                     <h1>What our users say</h1>
@@ -335,53 +338,76 @@ $tracks = mysqli_query($con, "
             </div>
         </div>
 
-        <div class="row">
-
-            <?php if (mysqli_num_rows($reviews) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($reviews)): ?>
-
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="testimonial__item">
-                            <div class="testimonial__item__text">
-
-                                <h4>
-                                    <?= htmlspecialchars($row['name']) ?>
-                                </h4>
-
-                                <!-- Rating -->
-                                <div class="rating">
+        <?php if (mysqli_num_rows($reviews) > 0): ?>
+            <!-- Swiper Slider -->
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <?php while ($row = mysqli_fetch_assoc($reviews)): ?>
+                        <div class="swiper-slide">
+                            <div class="testimonial__item p-4"
+                                style="background: linear-gradient(to bottom, #5c00ff, #1a0000); color: #fff; border-radius: 10px;">
+                                <h4 style="color:white; font-weight: bold;"><?= htmlspecialchars($row['name']) ?></h4>
+                                <div class="rating mb-2" style="color:yellow;">
                                     <?php
                                     $rating = (int) $row['rating'];
-
                                     for ($i = 1; $i <= 5; $i++) {
-                                        if ($i <= $rating) {
-                                            echo '<i class="fa fa-star"></i>';
-                                        } else {
-                                            echo '<i class="fa fa-star-o"></i>';
-                                        }
+                                        echo $i <= $rating
+                                            ? '<i class="fa fa-star"></i>'
+                                            : '<i class="fa fa-star-o"></i>';
                                     }
                                     ?>
                                 </div>
-
-                                <p>
-                                    <?= htmlspecialchars($row['review']) ?>
-                                </p>
-
+                                <p style="color:white;"><?= nl2br(htmlspecialchars($row['review'])) ?></p>
                             </div>
                         </div>
-                    </div>
-
-                <?php endwhile; ?>
-            <?php else: ?>
-                <div class="col-12 text-center">
-                    <p>No reviews yet.</p>
+                    <?php endwhile; ?>
                 </div>
-            <?php endif; ?>
 
-        </div>
+                <!-- Slider navigation -->
+                <div style="color:black;" class="swiper-button-next"></div>
+                <div style="color:black;" class="swiper-button-prev"></div>
+                <div style="color:white;" class="swiper-pagination"></div>
+            </div>
+        <?php else: ?>
+            <p class="text-center">No reviews yet.</p>
+        <?php endif; ?>
+
+        <!-- Review Form (kept intact for logged-in users) -->
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <div class="row mt-5">
+                <div class="col-lg-12">
+                    <h3>Leave a Review</h3>
+                    <form method="POST" action="submit_review.php">
+                        <div class="mb-3">
+                            <label>Rating</label>
+                            <select name="rating" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="5">★★★★★</option>
+                                <option value="4">★★★★</option>
+                                <option value="3">★★★</option>
+                                <option value="2">★★</option>
+                                <option value="1">★</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Review</label>
+                            <textarea name="review" class="form-control" required style="resize:none;"></textarea>
+                        </div>
+
+                        <button style="background:; color: black; border:2px solid #5c00ff; padding:8px;">SUBMIT REVIEW</button>
+                    </form>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="col-12 text-center mt-4">
+                <a href="/sound/login.php" style="color:black; font-weight: bold;  ">Login to leave a review</a>
+            </div>
+        <?php endif; ?>
+
     </div>
 </section>
-<!-- Testimonial Section End -->
+
 
 
 
@@ -447,5 +473,26 @@ include("./base/footer.php");
 
             el.innerHTML = d + "d " + h + "h " + m + "m";
         }, 1000);
+    });
+
+   
+// swiper logics 
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 3,
+        spaceBetween: 30,
+        loop: true,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            0: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            992: { slidesPerView: 3 },
+        },
     });
 </script>

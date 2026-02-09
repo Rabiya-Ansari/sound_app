@@ -1,0 +1,43 @@
+
+.testimonial__item {
+
+    padding: 20px;
+    transition: all 0.3s;
+}
+
+.testimonial__item:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial__item__pic {
+    height: 220px;
+    position: relative;
+}
+
+.testimonial__item__pic .quote {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    font-size: 26px;
+    color: #e53637;
+}
+
+.testimonial__item__text {
+    padding-top: 15px;
+}
+
+.testimonial__item__text h4 {
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.testimonial__item__text p {
+    color: #b7b7b7;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.testimonial__item__text .rating i {
+    color: #f5c518;
+    margin-right: 2px;
+}

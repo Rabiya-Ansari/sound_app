@@ -2,6 +2,7 @@
 include "./auth.php";
 include "../config/db_connection.php";
 
+
 /* =====================
    DELETE MUSIC
 ===================== */
@@ -16,6 +17,11 @@ if (isset($_GET['delete'])) {
     }
 
     mysqli_query($con, "DELETE FROM musics WHERE id=$id");
+
+    // ✅ Set flash message
+    $_SESSION['message'] = "Music deleted successfully!";
+    $_SESSION['message_type'] = "success";
+
     header("Location: music.php");
     exit;
 }
@@ -47,7 +53,6 @@ if (isset($_POST['save_music'])) {
     if (!empty($_POST['id'])) {
         $id = (int) $_POST['id'];
 
-        // handle file if uploaded
         if (!empty($_FILES['music_file']['name'])) {
             $file = $_FILES['music_file']['name'];
             $tmp = $_FILES['music_file']['tmp_name'];
@@ -66,7 +71,6 @@ if (isset($_POST['save_music'])) {
             $new_name = $edit_music['music_file'];
         }
 
-        // update query
         mysqli_query($con, "
             UPDATE musics SET
                 title='$title',
@@ -77,11 +81,16 @@ if (isset($_POST['save_music'])) {
                 music_file='$new_name'
             WHERE id=$id
         ");
+
+       
+        $_SESSION['message'] = "Music updated successfully!";
+        $_SESSION['message_type'] = "success";
+
         header("Location: music.php");
         exit;
 
     } else {
-        // add new
+        // add new music
         $file = $_FILES['music_file']['name'];
         $tmp = $_FILES['music_file']['tmp_name'];
         $new_name = time() . "_" . $file;
@@ -92,6 +101,10 @@ if (isset($_POST['save_music'])) {
             INSERT INTO musics (title, artist_id, release_year, language_id, genre_id, music_file)
             VALUES ('$title', $artist, $year, $language, $genre, '$new_name')
         ");
+
+       
+        $_SESSION['message'] = "New music added successfully!";
+        $_SESSION['message_type'] = "success";
         header("Location: music.php");
         exit;
     }
@@ -119,6 +132,23 @@ $genres_res = mysqli_query($con, "SELECT * FROM genres ORDER BY genre_name ASC")
 ?>
 
 <?php include "./base/header.php"; ?>
+
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+
+<?php if(isset($_SESSION['message'])): ?>
+<script>
+Swal.fire({
+    icon: '<?= $_SESSION['message_type'] ?>',
+    title: '<?= $_SESSION['message'] ?>',
+    showConfirmButton: true,
+    timer: 2000
+});
+</script>
+<?php 
+unset($_SESSION['message'], $_SESSION['message_type']); 
+endif; ?>
 
 <div class="content-page">
     <div class="content">
@@ -246,7 +276,7 @@ $genres_res = mysqli_query($con, "SELECT * FROM genres ORDER BY genre_name ASC")
                                     </td>
                                     <td>
                                         <a href="?edit=<?= $m['id'] ?>" class="btn btn-sm btn-warning">✏️</a>
-                                        <a href="?delete=<?= $m['id'] ?>" onclick="return confirm('Delete this song?')" class="btn btn-sm btn-danger">🗑</a>
+                                        <a href="?delete=<?= $m['id'] ?>" class="btn btn-sm btn-danger delete-btn" data-id="<?= $m['id'] ?>">🗑</a>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
@@ -258,5 +288,27 @@ $genres_res = mysqli_query($con, "SELECT * FROM genres ORDER BY genre_name ASC")
         </div>
     </div>
 </div>
+
+<script>
+// SweetAlert delete confirmation
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function(e){
+        e.preventDefault();
+        let id = this.dataset.id;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This song will be deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if(result.isConfirmed){
+                window.location.href = '?delete=' + id;
+            }
+        });
+    });
+});
+</script>
 
 <?php include "./base/footer.php"; ?>

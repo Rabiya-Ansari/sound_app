@@ -4,30 +4,37 @@ include 'config/db_connection.php';
 
 // LOGIN HANDLER
 if (isset($_POST['login'])) {
-    $email = $_POST['email'];
+
+    $email = mysqli_real_escape_string($con, $_POST['email']);
     $password = sha1($_POST['password']);
 
     $res = mysqli_query(
         $con,
-        "SELECT * FROM users WHERE email='$email' AND password='$password'"
+        "SELECT * FROM users WHERE email='$email' AND password='$password' LIMIT 1"
     );
 
     if (mysqli_num_rows($res) == 1) {
-        $user = mysqli_fetch_assoc($res);
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['role'] = $user['role'];
 
-        if ($user['role'] == 'admin') {
+        $user = mysqli_fetch_assoc($res);
+
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['role']    = $user['role'];
+        $_SESSION['name']    = $user['name'];   
+
+        if ($user['role'] === 'admin') {
             header("Location: /sound/admin/index.php");
         } else {
-            header("Location: /sound/user/dashboard.php");
+            
+            header("Location: /sound/index.php");
         }
         exit;
+
     } else {
         $error = "Invalid Email or Password";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
