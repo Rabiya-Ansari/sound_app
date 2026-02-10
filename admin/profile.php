@@ -69,16 +69,16 @@ if (isset($_POST['update_profile'])) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <?php if (isset($_SESSION['swal'])): ?>
-        <script>
-            Swal.fire({
-                icon: '<?= $_SESSION['swal']['icon'] ?>',
-                title: '<?= $_SESSION['swal']['title'] ?>',
-                text: '<?= $_SESSION['swal']['text'] ?>',
-                confirmButtonColor: '#3085d6'
-            });
-        </script>
-        <?php
-        unset($_SESSION['swal']);
+    <script>
+        Swal.fire({
+            icon: '<?= $_SESSION['swal']['icon'] ?>',
+            title: '<?= $_SESSION['swal']['title'] ?>',
+            text: '<?= $_SESSION['swal']['text'] ?>',
+            confirmButtonColor: '#3085d6'
+        });
+    </script>
+    <?php
+    unset($_SESSION['swal']);
 endif;
 ?>
 
@@ -90,16 +90,16 @@ endif;
         <div class="col-lg-10 col-md-9 mt-4">
 
             <?php if (!empty($_SESSION['success'])): ?>
-                    <div class="alert alert-success">
-                        <?= $_SESSION['success'];
-                        unset($_SESSION['success']); ?>
-                    </div>
+                <div class="alert alert-success">
+                    <?= $_SESSION['success'];
+                    unset($_SESSION['success']); ?>
+                </div>
             <?php endif; ?>
 
             <?php if (!empty($error)): ?>
-                    <div class="alert alert-danger">
-                        <?= $error ?>
-                    </div>
+                <div class="alert alert-danger">
+                    <?= $error ?>
+                </div>
             <?php endif; ?>
 
             <div class="row">

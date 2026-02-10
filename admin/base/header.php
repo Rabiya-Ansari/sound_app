@@ -87,7 +87,7 @@ if ($row = mysqli_fetch_assoc($result)) {
                                 <img src="/images/logo.png" alt="logo">
                             </span>
                             <span class="logo-sm">
-                                <img src="/images/logo-sm.png" alt="small logo">
+                                <img src="/sound/admin/images/logo-sm.png" alt="small logo">
                             </span>
                         </a>
 
@@ -97,7 +97,7 @@ if ($row = mysqli_fetch_assoc($result)) {
                                 <img src="/images/logo-dark.png" alt="dark logo">
                             </span>
                             <span class="logo-sm">
-                                <img src="/sound/admin/images/users/logo-sm.png" alt="small logo">
+                                <img src="/sound/admin/images/logo-sm.png" alt="small logo">
                             </span>
                         </a>
                     </div>

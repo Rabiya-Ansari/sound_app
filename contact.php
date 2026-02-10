@@ -78,6 +78,4 @@
         </div>
     </section>
     <!-- Contact Section End -->
-
-    
 <?php include './base/footer.php' ?>
