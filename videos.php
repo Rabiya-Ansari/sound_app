@@ -1,5 +1,4 @@
 <?php include 'base/header.php' ?>
-
     <!-- Breadcrumb Begin -->
     <div class="breadcrumb-option">
         <div class="container">
@@ -113,6 +112,6 @@
             </div>
         </div>
     </section>
-    <!-- Video Section End -->
+<!-- Video Section End -->
 
-   <?php include 'base/footer.php' ?>
+<?php include 'base/footer.php' ?>

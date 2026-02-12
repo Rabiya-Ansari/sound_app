@@ -2,10 +2,22 @@
 include "./auth.php";
 include "../config/db_connection.php";
 
-/* DELETE LOGIC */
+// delete logics
 if (isset($_GET['delete'])) {
     $delete_id = (int) $_GET['delete'];
-    mysqli_query($con, "DELETE FROM years WHERE id=$delete_id");
+
+
+    $res = mysqli_query($con, "SELECT image FROM albums WHERE id=$delete_id");
+    $row = mysqli_fetch_assoc($res);
+    if ($row && $row['image'] && file_exists('../media/' . $row['image'])) {
+        unlink('../media/' . $row['image']);
+    }
+
+mysqli_query($con, "DELETE FROM albums WHERE id=$delete_id");
+
+    $_SESSION['message'] = "year deleted successfully!";
+    $_SESSION['message_type'] = "success";
+
     header("Location: years.php");
     exit;
 }
@@ -39,6 +51,24 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
 
 <?php include "./base/header.php"; ?>
 
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+
+<?php if (isset($_SESSION['message'])): ?>
+    <script>
+        Swal.fire({
+            icon: '<?= $_SESSION['message_type'] ?>',
+            title: '<?= $_SESSION['message'] ?>',
+            showConfirmButton: true,
+            timer: 2000
+        });
+    </script>
+<?php
+    unset($_SESSION['message'], $_SESSION['message_type']);
+endif; ?>
+
+
 <div class="content-page">
     <div class="content">
         <div class="container-fluid mt-4">
@@ -52,12 +82,9 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
                     <form method="POST">
                         <div class="mb-3">
                             <label class="form-label">Year</label>
-                            <input type="number"
-                                   name="year"
-                                   class="form-control"
-                                   placeholder="e.g. 2024"
-                                   value="<?= $year_to_edit ? htmlspecialchars($year_to_edit['release_year']) : '' ?>"
-                                   required>
+                            <input type="number" name="year" class="form-control" placeholder="e.g. 2024"
+                                value="<?= $year_to_edit ? htmlspecialchars($year_to_edit['release_year']) : '' ?>"
+                                required>
                         </div>
 
                         <button type="submit" name="save_year" class="btn btn-primary">
@@ -77,8 +104,8 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
                     <h4>📅 All Years</h4>
                 </div>
                 <div class="card-body table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+                    <table class="table table-hover justify-content-center align-middle text-center">
+                        <thead class="table-dark">
                             <tr>
                                 <th>#</th>
                                 <th>Year</th>
@@ -86,25 +113,23 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = 1; while ($row = mysqli_fetch_assoc($years)): ?>
+                            <?php $i = 1;
+                            while ($row = mysqli_fetch_assoc($years)): ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($row['release_year']) ?></td>
                                     <td>
-                                        <a href="?edit=<?= $row['id'] ?>" class="btn btn-sm btn-warning">
-                                            Edit
+                                        <a href="?edit=<?= $row['id'] ?>" class="btn btn-sm btn-dark">
+                                            <i class="ri-pencil-line"></i> Edit
                                         </a>
-                                        <a href="?delete=<?= $row['id'] ?>"
-                                           class="btn btn-sm btn-danger"
-                                           onclick="return confirm('Are you sure you want to delete this year?');">
-                                            Delete
+                                        <a href="?delete=<?= $row['id'] ?>" class="btn btn-sm btn-danger delete-btn">
+                                            <i class="ri-delete-bin-line"></i> Delete
                                         </a>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>
                     </table>
-
                     <?php if (mysqli_num_rows($years) == 0): ?>
                         <p class="text-center mt-3">No years found.</p>
                     <?php endif; ?>
@@ -114,5 +139,27 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
         </div>
     </div>
 </div>
+
+<script>
+     // SweetAlert delete confirmation
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let id = this.dataset.id;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This year will be deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '?delete=' + id;
+                }
+            });
+        });
+    });
+</script>
 
 <?php include "./base/footer.php"; ?>

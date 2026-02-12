@@ -26,8 +26,8 @@ $reviews = mysqli_query($con, "
                 <div class="card-body p-0">
 
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0 text-center">
-                            <thead class="table-light">
+                    <table class="table table-hover justify-content-center align-middle text-center table-bordered">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>User</th>
                                     <th class="d-none d-sm-table-cell">Email</th>

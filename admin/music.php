@@ -19,7 +19,7 @@ if (isset($_GET['delete'])) {
     mysqli_query($con, "DELETE FROM musics WHERE id=$id");
 
     // ✅ Set flash message
-    $_SESSION['message'] = "Music deleted successfully!";
+    $_SESSION['message'] = "music deleted successfully!";
     $_SESSION['message_type'] = "success";
 
     header("Location: music.php");
@@ -82,13 +82,12 @@ if (isset($_POST['save_music'])) {
             WHERE id=$id
         ");
 
-       
+
         $_SESSION['message'] = "Music updated successfully!";
         $_SESSION['message_type'] = "success";
 
         header("Location: music.php");
         exit;
-
     } else {
         // add new music
         $file = $_FILES['music_file']['name'];
@@ -102,7 +101,7 @@ if (isset($_POST['save_music'])) {
             VALUES ('$title', $artist, $year, $language, $genre, '$new_name')
         ");
 
-       
+
         $_SESSION['message'] = "New music added successfully!";
         $_SESSION['message_type'] = "success";
         header("Location: music.php");
@@ -137,17 +136,17 @@ $genres_res = mysqli_query($con, "SELECT * FROM genres ORDER BY genre_name ASC")
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 
-<?php if(isset($_SESSION['message'])): ?>
-<script>
-Swal.fire({
-    icon: '<?= $_SESSION['message_type'] ?>',
-    title: '<?= $_SESSION['message'] ?>',
-    showConfirmButton: true,
-    timer: 2000
-});
-</script>
-<?php 
-unset($_SESSION['message'], $_SESSION['message_type']); 
+<?php if (isset($_SESSION['message'])): ?>
+    <script>
+        Swal.fire({
+            icon: '<?= $_SESSION['message_type'] ?>',
+            title: '<?= $_SESSION['message'] ?>',
+            showConfirmButton: true,
+            timer: 2000
+        });
+    </script>
+<?php
+    unset($_SESSION['message'], $_SESSION['message_type']);
 endif; ?>
 
 <div class="content-page">
@@ -166,7 +165,7 @@ endif; ?>
 
                         <div class="mb-3">
                             <label>Music Title</label>
-                            <input type="text" name="title" class="form-control" 
+                            <input type="text" name="title" class="form-control"
                                 value="<?= htmlspecialchars($edit_music['title'] ?? '') ?>" required>
                         </div>
 
@@ -177,8 +176,8 @@ endif; ?>
                                     <option value="">Select Artist</option>
                                     <?php mysqli_data_seek($artists_res, 0); ?>
                                     <?php while ($a = mysqli_fetch_assoc($artists_res)) : ?>
-                                        <option value="<?= $a['id'] ?>" 
-                                            <?= isset($edit_music['artist_id']) && $edit_music['artist_id']==$a['id'] ? 'selected':'' ?>>
+                                        <option value="<?= $a['id'] ?>"
+                                            <?= isset($edit_music['artist_id']) && $edit_music['artist_id'] == $a['id'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($a['artist_name']) ?>
                                         </option>
                                     <?php endwhile; ?>
@@ -191,8 +190,8 @@ endif; ?>
                                     <option value="">Select Year</option>
                                     <?php mysqli_data_seek($years_res, 0); ?>
                                     <?php while ($y = mysqli_fetch_assoc($years_res)) : ?>
-                                        <option value="<?= $y['release_year'] ?>" 
-                                            <?= isset($edit_music['release_year']) && $edit_music['release_year']==$y['release_year'] ? 'selected':'' ?>>
+                                        <option value="<?= $y['release_year'] ?>"
+                                            <?= isset($edit_music['release_year']) && $edit_music['release_year'] == $y['release_year'] ? 'selected' : '' ?>>
                                             <?= $y['release_year'] ?>
                                         </option>
                                     <?php endwhile; ?>
@@ -205,8 +204,8 @@ endif; ?>
                                     <option value="">Select Language</option>
                                     <?php mysqli_data_seek($languages_res, 0); ?>
                                     <?php while ($l = mysqli_fetch_assoc($languages_res)) : ?>
-                                        <option value="<?= $l['id'] ?>" 
-                                            <?= isset($edit_music['language_id']) && $edit_music['language_id']==$l['id'] ? 'selected':'' ?>>
+                                        <option value="<?= $l['id'] ?>"
+                                            <?= isset($edit_music['language_id']) && $edit_music['language_id'] == $l['id'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($l['language_name']) ?>
                                         </option>
                                     <?php endwhile; ?>
@@ -219,8 +218,8 @@ endif; ?>
                                     <option value="">Select Genre</option>
                                     <?php mysqli_data_seek($genres_res, 0); ?>
                                     <?php while ($g = mysqli_fetch_assoc($genres_res)) : ?>
-                                        <option value="<?= $g['id'] ?>" 
-                                            <?= isset($edit_music['genre_id']) && $edit_music['genre_id']==$g['id'] ? 'selected':'' ?>>
+                                        <option value="<?= $g['id'] ?>"
+                                            <?= isset($edit_music['genre_id']) && $edit_music['genre_id'] == $g['id'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($g['genre_name']) ?>
                                         </option>
                                     <?php endwhile; ?>
@@ -247,8 +246,8 @@ endif; ?>
                 </div>
 
                 <div class="card-body table-responsive">
-                    <table class="table table-hover table-bordered">
-                        <thead>
+                    <table class="table table-hover justify-content-center align-middle text-center table-bordered">
+                        <thead class="table-dark">
                             <tr>
                                 <th>#</th>
                                 <th>Title</th>
@@ -261,7 +260,8 @@ endif; ?>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = 1; while ($m = mysqli_fetch_assoc($musics)) : ?>
+                            <?php $i = 1;
+                            while ($m = mysqli_fetch_assoc($musics)) : ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($m['title']) ?></td>
@@ -275,8 +275,22 @@ endif; ?>
                                         </audio>
                                     </td>
                                     <td>
-                                        <a href="?edit=<?= $m['id'] ?>" class="btn btn-sm btn-warning">✏️</a>
-                                        <a href="?delete=<?= $m['id'] ?>" class="btn btn-sm btn-danger delete-btn" data-id="<?= $m['id'] ?>">🗑</a>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <a href="?edit=<?= $m['id'] ?>"
+                                                class="btn btn-sm btn-dark"
+                                                title="Edit"
+                                                aria-label="Edit">
+                                                <i class="ri-pencil-line"></i>
+                                            </a>
+
+                                            <a href="?delete=<?= $m['id'] ?>"
+                                                class="btn btn-sm btn-danger delete-btn"
+                                                data-id="<?= $m['id'] ?>"
+                                                title="Delete"
+                                                aria-label="Delete">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
@@ -284,31 +298,30 @@ endif; ?>
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
 <script>
-// SweetAlert delete confirmation
-document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', function(e){
-        e.preventDefault();
-        let id = this.dataset.id;
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This song will be deleted!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if(result.isConfirmed){
-                window.location.href = '?delete=' + id;
-            }
+    // SweetAlert delete confirmation
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let id = this.dataset.id;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This music will be deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '?delete=' + id;
+                }
+            });
         });
     });
-});
 </script>
 
 <?php include "./base/footer.php"; ?>

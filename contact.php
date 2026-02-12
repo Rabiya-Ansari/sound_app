@@ -1,6 +1,6 @@
 <?php include './base/header.php' ?>
 
-    <!-- Breadcrumb Begin -->
+<!-- Breadcrumb Begin -->
     <div class="breadcrumb-option">
         <div class="container">
             <div class="row">
@@ -26,7 +26,7 @@
     <!-- Map End -->
 
     <!-- Contact Section Begin -->
-    <section class="contact spad">
+    <section class="contact py-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4">
@@ -77,5 +77,6 @@
             </div>
         </div>
     </section>
-    <!-- Contact Section End -->
+
+<!-- Contact Section End -->
 <?php include './base/footer.php' ?>

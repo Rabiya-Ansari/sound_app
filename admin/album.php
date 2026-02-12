@@ -13,12 +13,13 @@ if (isset($_GET['delete'])) {
         unlink('../media/' . $row['image']);
     }
 
-    mysqli_query($con, "DELETE FROM albums WHERE id=$delete_id");
+mysqli_query($con, "DELETE FROM albums WHERE id=$delete_id");
 
+    $_SESSION['message'] = "album deleted successfully!";
+    $_SESSION['message_type'] = "success";
 
-    echo "<script>window.location.href='album.php';</script>";
+    header("Location: album.php");
     exit;
-
 }
 
 // add logics
@@ -85,8 +86,6 @@ if (isset($_POST['update'])) {
             $img_sql
          WHERE id=$id"
     );
-
-
     echo "<script>window.location.href='album.php';</script>";
     exit;
 }
@@ -120,153 +119,189 @@ $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name 
 
 <?php include './base/header.php'; ?>
 
-<div class="main-content" style="margin-left: 250px; padding: 20px;">
-    <div class="container-fluid">
-        <h2>🎵 Albums</h2>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
-        <!-- Add/Edit Form -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><?= $edit_album ? 'Edit Album' : 'Add New Album' ?></h4>
-            </div>
-            <div class="card-body">
-                <form method="POST" enctype="multipart/form-data">
-                    <?php if ($edit_album): ?>
-                        <input type="hidden" name="id" value="<?= $edit_album['id'] ?>">
-                    <?php endif; ?>
+<?php if (isset($_SESSION['message'])): ?>
+    <script>
+        Swal.fire({
+            icon: '<?= $_SESSION['message_type'] ?>',
+            title: '<?= $_SESSION['message'] ?>',
+            showConfirmButton: true,
+            timer: 2000
+        });
+    </script>
+<?php
+    unset($_SESSION['message'], $_SESSION['message_type']);
+endif; ?>
 
-                    <div class="mb-3">
-                        <label class="form-label">Album Name</label>
-                        <input type="text" name="name" class="form-control" required
-                            value="<?= $edit_album ? htmlspecialchars($edit_album['album_name']) : '' ?>">
-                    </div>
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid mt-4">
+            <h2>🎵 Albums</h2>
 
-                    <div class="mb-3">
-                        <label class="form-label">Artist</label>
-                        <select name="artist" class="form-select" required>
-                            <option value="">Select Artist</option>
-                            <?php mysqli_data_seek($artists, 0);
-                            while ($a = mysqli_fetch_assoc($artists)): ?>
-                                <option value="<?= $a['id'] ?>" <?= $edit_album && $edit_album['artist_id'] == $a['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($a['artist_name']) ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Genre</label>
-                        <select name="genre" class="form-select" required>
-                            <option value="">Select Genre</option>
-                            <?php mysqli_data_seek($genres, 0);
-                            while ($g = mysqli_fetch_assoc($genres)): ?>
-                                <option value="<?= $g['id'] ?>" <?= $edit_album && $edit_album['genre_id'] == $g['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($g['genre_name']) ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Language</label>
-                        <select name="language" class="form-select" required>
-                            <option value="">Select Language</option>
-                            <?php mysqli_data_seek($languages, 0);
-                            while ($l = mysqli_fetch_assoc($languages)): ?>
-                                <option value="<?= $l['id'] ?>" <?= $edit_album && $edit_album['language_id'] == $l['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($l['language_name']) ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Release Year</label>
-                        <select name="year" class="form-select" required>
-                            <option value="">Select Year</option>
-                            <?php
-                            $currentYear = date('Y');
-                            for ($y = $currentYear; $y >= 1950; $y--) {
-                                $selected = ($edit_album && $edit_album['release_year'] == $y) ? 'selected' : '';
-                                echo "<option value='$y' $selected>$y</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Album Image</label>
-                        <input type="file" name="image" class="form-control">
-                        <?php if ($edit_album && $edit_album['image']): ?>
-                            <img src="../media/<?= htmlspecialchars($edit_album['image']) ?>" alt="Album Image"
-                                style="height:100px;margin-top:10px;">
+            <!-- Add/Edit Form -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><?= $edit_album ? 'Edit Album' : 'Add New Album' ?></h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <?php if ($edit_album): ?>
+                            <input type="hidden" name="id" value="<?= $edit_album['id'] ?>">
                         <?php endif; ?>
-                    </div>
 
-                    <button type="submit" name="<?= $edit_album ? 'update' : 'add' ?>" class="btn btn-primary">
-                        <?= $edit_album ? 'Update Album' : 'Add Album' ?>
-                    </button>
-                    <?php if ($edit_album): ?>
-                        <a href="album.php" class="btn btn-secondary ms-2">Cancel</a>
-                    <?php endif; ?>
-                </form>
+                        <div class="mb-3">
+                            <label class="form-label">Album Name</label>
+                            <input type="text" name="name" class="form-control" required
+                                value="<?= $edit_album ? htmlspecialchars($edit_album['album_name']) : '' ?>">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Artist</label>
+                            <select name="artist" class="form-select" required>
+                                <option value="">Select Artist</option>
+                                <?php mysqli_data_seek($artists, 0);
+                                while ($a = mysqli_fetch_assoc($artists)): ?>
+                                    <option value="<?= $a['id'] ?>" <?= $edit_album && $edit_album['artist_id'] == $a['id'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($a['artist_name']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Genre</label>
+                            <select name="genre" class="form-select" required>
+                                <option value="">Select Genre</option>
+                                <?php mysqli_data_seek($genres, 0);
+                                while ($g = mysqli_fetch_assoc($genres)): ?>
+                                    <option value="<?= $g['id'] ?>" <?= $edit_album && $edit_album['genre_id'] == $g['id'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($g['genre_name']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <select name="language" class="form-select" required>
+                                <option value="">Select Language</option>
+                                <?php mysqli_data_seek($languages, 0);
+                                while ($l = mysqli_fetch_assoc($languages)): ?>
+                                    <option value="<?= $l['id'] ?>" <?= $edit_album && $edit_album['language_id'] == $l['id'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($l['language_name']) ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Release Year</label>
+                            <select name="year" class="form-select" required>
+                                <option value="">Select Year</option>
+                                <?php
+                                $currentYear = date('Y');
+                                for ($y = $currentYear; $y >= 1950; $y--) {
+                                    $selected = ($edit_album && $edit_album['release_year'] == $y) ? 'selected' : '';
+                                    echo "<option value='$y' $selected>$y</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Album Image</label>
+                            <input type="file" name="image" class="form-control">
+                            <?php if ($edit_album && $edit_album['image']): ?>
+                                <img src="../media/<?= htmlspecialchars($edit_album['image']) ?>" alt="Album Image"
+                                    style="height:100px;margin-top:10px;">
+                            <?php endif; ?>
+                        </div>
+
+                        <button type="submit" name="<?= $edit_album ? 'update' : 'add' ?>" class="btn btn-primary">
+                            <?= $edit_album ? 'Update Album' : 'Add Album' ?>
+                        </button>
+                        <?php if ($edit_album): ?>
+                            <a href="album.php" class="btn btn-secondary ms-2">Cancel</a>
+                        <?php endif; ?>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <!-- Albums Table -->
-        <div class="card shadow-sm">
-            <div class="card-body table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Image</th>
-                            <th>Album Name</th>
-                            <th>Artist</th>
-                            <th>Genre</th>
-                            <th>Language</th>
-                            <th>Release Year</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $i = 1;
-                        while ($r = mysqli_fetch_assoc($albums)): ?>
+            <!-- Albums Table -->
+            <div class="card shadow-sm">
+                <div class="card-body table-responsive">
+                    <table class="table table-hover justify-content-center align-middle text-center">
+                        <thead class="table-dark">
                             <tr>
-                                <td><?= $i++ ?></td>
-                                <td>
-                                    <?php if ($r['image'] && file_exists('../media/' . $r['image'])): ?>
-                                        <img src="../media/<?= htmlspecialchars($r['image']) ?>" alt="Album Image"
-                                            style="height:50px;">
-                                    <?php else: ?>
-                                        N/A
-                                    <?php endif; ?>
-                                </td>
-                                <td><?= htmlspecialchars($r['album_name']) ?></td>
-                                <td><?= htmlspecialchars($r['artist_name']) ?></td>
-                                <td><?= htmlspecialchars($r['genre_name']) ?></td>
-                                <td><?= htmlspecialchars($r['language_name']) ?></td>
-                                <td><?= htmlspecialchars($r['release_year']) ?></td>
-                                <td>
-                                    <a href="?edit=<?= $r['id'] ?>" class="btn btn-sm btn-warning">
-                                        <i class="ri-edit-line"></i> Edit
-                                    </a>
-                                    <a href="?delete=<?= $r['id'] ?>" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this album?');">
-                                        <i class="ri-delete-bin-line"></i> Delete
-                                    </a>
-                                </td>
+                                <th>#</th>
+                                <th>Image</th>
+                                <th>Album Name</th>
+                                <th>Artist</th>
+                                <th>Genre</th>
+                                <th>Language</th>
+                                <th>Release Year</th>
+                                <th>Actions</th>
                             </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-                <?php if (mysqli_num_rows($albums) == 0): ?>
-                    <p class="text-center mt-3">No albums found.</p>
-                <?php endif; ?>
+                        </thead>
+                        <tbody>
+                            <?php $i = 1;
+                            while ($r = mysqli_fetch_assoc($albums)): ?>
+                                <tr>
+                                    <td><?= $i++ ?></td>
+                                    <td>
+                                        <?php if ($r['image'] && file_exists('../media/' . $r['image'])): ?>
+                                            <img src="../media/<?= htmlspecialchars($r['image']) ?>" alt="Album Image"
+                                                style="height:50px;">
+                                        <?php else: ?>
+                                            N/A
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?= htmlspecialchars($r['album_name']) ?></td>
+                                    <td><?= htmlspecialchars($r['artist_name']) ?></td>
+                                    <td><?= htmlspecialchars($r['genre_name']) ?></td>
+                                    <td><?= htmlspecialchars($r['language_name']) ?></td>
+                                    <td><?= htmlspecialchars($r['release_year']) ?></td>
+                                    <td>
+                                        <a href="?edit=<?= $r['id'] ?>" class="btn btn-sm btn-dark">
+                                            <i class="ri-pencil-line"></i> Edit
+                                        </a>
+                                        <a href="?delete=<?= $r['id'] ?>" class="btn btn-sm btn-danger delete-btn">
+                                            <i class="ri-delete-bin-line"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                    <?php if (mysqli_num_rows($albums) == 0): ?>
+                        <p class="text-center mt-3">No albums found.</p>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
-
+<script>
+     // SweetAlert delete confirmation
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let id = this.dataset.id;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This album will be deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '?delete=' + id;
+                }
+            });
+        });
+    });
+</script>
 <?php include './base/footer.php'; ?>
