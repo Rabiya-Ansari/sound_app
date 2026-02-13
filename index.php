@@ -94,7 +94,7 @@ $tracks = mysqli_query($con, "
                             </ul>
                         </nav>
                         <div class="header__right__social">
-
+                            
                             <?php if (isset($_SESSION['user_id']) && !empty($_SESSION['name'])): ?>
                                 <div class="dropdown">
                                     <a href="#" class="dropdown-toggle text-white" data-bs-toggle="dropdown">

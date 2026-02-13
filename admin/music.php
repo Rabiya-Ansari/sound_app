@@ -2,7 +2,6 @@
 include "./auth.php";
 include "../config/db_connection.php";
 
-
 /* =====================
    DELETE MUSIC
 ===================== */
@@ -18,8 +17,7 @@ if (isset($_GET['delete'])) {
 
     mysqli_query($con, "DELETE FROM musics WHERE id=$id");
 
-    // ✅ Set flash message
-    $_SESSION['message'] = "music deleted successfully!";
+    $_SESSION['message'] = "Music deleted successfully!";
     $_SESSION['message_type'] = "success";
 
     header("Location: music.php");
@@ -82,7 +80,6 @@ if (isset($_POST['save_music'])) {
             WHERE id=$id
         ");
 
-
         $_SESSION['message'] = "Music updated successfully!";
         $_SESSION['message_type'] = "success";
 
@@ -101,7 +98,6 @@ if (isset($_POST['save_music'])) {
             VALUES ('$title', $artist, $year, $language, $genre, '$new_name')
         ");
 
-
         $_SESSION['message'] = "New music added successfully!";
         $_SESSION['message_type'] = "success";
         header("Location: music.php");
@@ -115,6 +111,7 @@ if (isset($_POST['save_music'])) {
 $musics = mysqli_query($con, "
     SELECT musics.*, 
            artists.artist_name, 
+           artists.artist_image,
            languages.language_name, 
            genres.genre_name
     FROM musics
@@ -135,18 +132,17 @@ $genres_res = mysqli_query($con, "SELECT * FROM genres ORDER BY genre_name ASC")
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
-
 <?php if (isset($_SESSION['message'])): ?>
-    <script>
-        Swal.fire({
-            icon: '<?= $_SESSION['message_type'] ?>',
-            title: '<?= $_SESSION['message'] ?>',
-            showConfirmButton: true,
-            timer: 2000
-        });
-    </script>
+<script>
+    Swal.fire({
+        icon: '<?= $_SESSION['message_type'] ?>',
+        title: '<?= $_SESSION['message'] ?>',
+        showConfirmButton: true,
+        timer: 2000
+    });
+</script>
 <?php
-    unset($_SESSION['message'], $_SESSION['message_type']);
+unset($_SESSION['message'], $_SESSION['message_type']);
 endif; ?>
 
 <div class="content-page">
@@ -246,12 +242,13 @@ endif; ?>
                 </div>
 
                 <div class="card-body table-responsive">
-                    <table class="table table-hover justify-content-center align-middle text-center table-bordered">
+                    <table class="table table-hover table-bordered justify-content-center align-middle text-center">
                         <thead class="table-dark">
                             <tr>
                                 <th>#</th>
                                 <th>Title</th>
                                 <th>Artist</th>
+                                <th>Artist Image</th>
                                 <th>Year</th>
                                 <th>Language</th>
                                 <th>Genre</th>
@@ -260,12 +257,20 @@ endif; ?>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = 1;
-                            while ($m = mysqli_fetch_assoc($musics)) : ?>
+                            <?php $i = 1; while ($m = mysqli_fetch_assoc($musics)) : ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($m['title']) ?></td>
                                     <td><?= htmlspecialchars($m['artist_name'] ?? '-') ?></td>
+                                    <td>
+                                        <?php if(!empty($m['artist_image']) && file_exists('../media/' . $m['artist_image'])): ?>
+                                            <img src="../media/<?= htmlspecialchars($m['artist_image']) ?>" 
+                                                 style="width:50px; height:auto; border-radius:4px;" 
+                                                 alt="<?= htmlspecialchars($m['artist_name']) ?>">
+                                        <?php else: ?>
+                                            <span>No image</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?= $m['release_year'] ?></td>
                                     <td><?= htmlspecialchars($m['language_name'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars($m['genre_name'] ?? '-') ?></td>
@@ -276,18 +281,11 @@ endif; ?>
                                     </td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <a href="?edit=<?= $m['id'] ?>"
-                                                class="btn btn-sm btn-dark"
-                                                title="Edit"
-                                                aria-label="Edit">
+                                            <a href="?edit=<?= $m['id'] ?>" class="btn btn-sm btn-dark">
                                                 <i class="ri-pencil-line"></i>
                                             </a>
 
-                                            <a href="?delete=<?= $m['id'] ?>"
-                                                class="btn btn-sm btn-danger delete-btn"
-                                                data-id="<?= $m['id'] ?>"
-                                                title="Delete"
-                                                aria-label="Delete">
+                                            <a href="?delete=<?= $m['id'] ?>" class="btn btn-sm btn-danger delete-btn" data-id="<?= $m['id'] ?>">
                                                 <i class="ri-delete-bin-line"></i>
                                             </a>
                                         </div>
@@ -298,6 +296,7 @@ endif; ?>
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -313,7 +312,7 @@ endif; ?>
                 text: "This music will be deleted!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'delete it!',
+                confirmButtonText: 'Delete it!',
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {

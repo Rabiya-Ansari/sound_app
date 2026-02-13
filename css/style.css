@@ -2933,5 +2933,99 @@ ol {
 	}
 }
 
+/* search */
+.header__search input {
+    width: 180px;
+    border-radius: 20px 0 0 20px;
+}
+
+.header__search button {
+    border-radius: 0 20px 20px 0;
+}
 
 
+/* musics */
+:root {
+    --primary: #6f42c1;
+    --dark-bg: #0f0f1a;
+    --card-bg: #1c1c2b;
+    --text-light: #ffffff;
+    --text-muted: #bcbcbc;
+}
+
+
+/* Cards */
+.card {
+    border:1px solid var(--dark-bg) ;
+  
+}
+
+/* Mini Progress */
+.mini-progress {
+    height: 4px;
+    background: #bcbcbc;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.mini-bar {
+    height: 4px;
+    width: 30%;
+    background: var(--primary);
+}
+
+/* Volume Line */
+.volume-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.volume-bar {
+    flex: 1;
+    height: 4px;
+    background: #2e2e40;
+    border-radius: 10px;
+}
+
+.volume-fill {
+    height: 4px;
+    width: 50%;
+    background: var(--primary);
+}
+
+/* Global Player */
+.global-player {
+    background: var(--dark-bg);
+    color: var(--text-light);
+    border-top: 1px solid #222;
+}
+
+.play-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: none;
+    color: white;
+}
+
+.jp-seek-bar {
+    height: 5px;
+    background: #2e2e40;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.jp-play-bar {
+    height: 5px;
+    width: 0%;
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+.time {
+    font-size: 12px;
+    color: var(--text-muted);
+}
