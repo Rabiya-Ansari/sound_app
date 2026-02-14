@@ -116,7 +116,7 @@ endif; ?>
 
                         <div class="mb-3">
                             <label class="form-label">Artist Image</label>
-                            <input type="file" name="artist_image" class="form-control" <?= $artist_to_edit ? '' : 'required' ?>>
+                            <input type="file" name="artist_image" class="form-control" <?= $artist_to_edit ? '' : 'required' ?> required>
                             <?php if ($artist_to_edit && $artist_to_edit['artist_image']): ?>
                                 <img src="../media/<?= htmlspecialchars($artist_to_edit['artist_image']) ?>" alt="Artist Image" style="width: 100px; margin-top: 10px;">
                             <?php endif; ?>

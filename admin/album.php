@@ -195,7 +195,7 @@ $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name 
 
                         <div class="mb-3">
                             <label class="form-label">Album Image</label>
-                            <input type="file" name="image" class="form-control">
+                            <input type="file" name="image" class="form-control" required>
                             <?php if ($edit_album && $edit_album['image']): ?>
                                 <img src="../media/<?= htmlspecialchars($edit_album['image']) ?>" alt="Album Image"
                                     style="height:100px;margin-top:10px;">

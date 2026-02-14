@@ -2,6 +2,8 @@
 session_start();
 include 'config/db_connection.php';
 
+$error = ""; // default
+
 // LOGIN HANDLER
 if (isset($_POST['login'])) {
 
@@ -17,24 +19,28 @@ if (isset($_POST['login'])) {
 
         $user = mysqli_fetch_assoc($res);
 
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['role']    = $user['role'];
-        $_SESSION['name']    = $user['name'];   
-
-        if ($user['role'] === 'admin') {
-            header("Location: /sound/admin/index.php");
+        // Check if user is banned
+        if ($user['status'] == 1) {
+            $error = "Your account has been banned.";
         } else {
-            
-            header("Location: /sound/index.php");
+
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['name'] = $user['name'];
+
+            if ($user['role'] === 'admin') {
+                header("Location: /sound/admin/index.php");
+            } else {
+                header("Location: /sound/index.php");
+            }
+            exit;
         }
-        exit;
 
     } else {
         $error = "Invalid Email or Password";
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -77,12 +83,11 @@ if (isset($_POST['login'])) {
                         <small class="text-light opacity-75">Pick up where you left off</small>
                     </div>
 
-                    <?php if (isset($error)): ?>
-                        <div class="alert alert-danger text-center py-2">
-                            <?= $error ?>
+                    <?php if (!empty($error)): ?>
+                        <div id="loginAlert" class="alert alert-danger text-center py-2">
+                            <?= htmlspecialchars($error) ?>
                         </div>
                     <?php endif; ?>
-
                     <form method="POST">
 
                         <div class="mb-3">
@@ -160,6 +165,14 @@ if (isset($_POST['login'])) {
                 icon.classList.replace("ri-eye-line", "ri-eye-off-line");
             }
         }
+
+        // alert timeout
+        setTimeout(function () {
+            var alertBox = document.getElementById("loginAlert");
+            if (alertBox) {
+                alertBox.style.display = "none";
+            }
+        }, 3000);
     </script>
 </body>
 
