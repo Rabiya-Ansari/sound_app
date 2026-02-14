@@ -36,6 +36,33 @@ $tracks = mysqli_query($con, "
     ORDER BY musics.id DESC
     LIMIT 6
 ");
+// search logics
+$search = "";
+
+if (isset($_GET['query']) && trim($_GET['query']) != "") {
+    $search = mysqli_real_escape_string($con, $_GET['query']);
+
+    $where = "WHERE 
+        musics.title LIKE '%$search%' OR
+        artists.artist_name LIKE '%$search%' OR
+        albums.album_name LIKE '%$search%' OR
+        musics.release_year LIKE '%$search%'";
+} else {
+    $where = "";
+}
+
+// Fetch tracks with artist, image, album, and search applied
+$tracks = mysqli_query($con, "
+    SELECT 
+        musics.*, 
+        artists.artist_name,
+        albums.album_name
+    FROM musics
+    LEFT JOIN artists ON artists.id = musics.artist_id
+    LEFT JOIN albums ON albums.id = musics.album_id
+    $where
+    ORDER BY musics.id DESC
+");
 
 ?>
 <!DOCTYPE html>
@@ -101,6 +128,68 @@ $tracks = mysqli_query($con, "
                                 <li><a href="./musics.php">Musics</a></li>
                                 <li><a href="./videos.php">Videos</a></li>
                                 <li><a href="./contact.php">Contact</a></li>
+
+                                <!-- Search Icon -->
+                                <li class="search-box" style="background:transparent; list-style:none;">
+
+                                    <style>
+                                        .search-box {
+                                            display: flex;
+                                            align-items: center;
+                                        }
+
+                                        .search-form form {
+                                            display: flex;
+                                            align-items: center;
+                                            background: rgba(255, 255, 255, 0.1);
+                                            backdrop-filter: blur(8px);
+                                            border-radius: 50px;
+                                            padding: 5px 10px;
+                                            border: 1px solid rgba(255, 255, 255, 0.3);
+                                        }
+
+                                        .search-form input {
+                                            border: none;
+                                            outline: none;
+                                            background: transparent;
+                                            color: #fff;
+                                            padding: 8px 12px;
+                                            width: 180px;
+                                            font-size: 14px;
+                                        }
+
+                                        .search-form input::placeholder {
+                                            color: rgba(255, 255, 255, 0.7);
+                                        }
+
+                                        .search-form button {
+                                            background: transparent;
+                                            border: none;
+                                            color: #fff;
+                                            cursor: pointer;
+                                            font-size: 16px;
+                                            padding: 5px 10px;
+                                            border-radius: 50%;
+                                            transition: 0.3s ease;
+                                        }
+
+                                        .search-form button:hover {
+                                            background: rgba(255, 255, 255, 0.2);
+                                        }
+                                    </style>
+
+                                    <!-- Search Form -->
+                                    <div id="searchForm" class="search-form">
+                                        <form action="" method="GET">
+                                            <input type="text" name="query" placeholder="Search here..." required>
+                                            <button type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </li>
+
                             </ul>
                         </nav>
                         <div class="header__right__social">
@@ -301,7 +390,7 @@ $tracks = mysqli_query($con, "
                 </div>
                 <div class="col-lg-5">
                     <div class="track__all">
-                        <a href="#" class="primary-btn border-btn">View all tracks</a>
+                        <a href="./musics.php" class="primary-btn border-btn">View all tracks</a>
                     </div>
                 </div>
             </div>
@@ -318,8 +407,19 @@ $tracks = mysqli_query($con, "
                                     <?= htmlspecialchars($m['title']) ?>
                                     <small style="font-size:12px;color:#aaa;">
                                         - <?= htmlspecialchars($m['artist_name'] ?? '') ?>
+                                        <?php if (!empty($m['release_year'])): ?>
+                                            (<?= $m['release_year'] ?>)
+                                        <?php endif; ?>
                                     </small>
                                 </h4>
+
+                                <?php if (!empty($m['artist_image'])): ?>
+                                    <div class="track_artist_image mb-2">
+                                        <img src="media/<?= $m['artist_image'] ?>"
+                                            alt="<?= htmlspecialchars($m['artist_name']) ?>"
+                                            style="width:50px; height:50px; border-radius:50%;">
+                                    </div>
+                                <?php endif; ?>
 
                                 <div class="jp-jplayer jplayer" data-ancestor=".jp_container_<?= $i ?>"
                                     data-url="media/<?= $m['music_file'] ?>">
@@ -342,7 +442,7 @@ $tracks = mysqli_query($con, "
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="jp-duration ml-auto">00:00</div>
+
                                         </div>
 
                                         <!-- Volume -->
@@ -360,8 +460,8 @@ $tracks = mysqli_query($con, "
                             $i++;
                         endwhile;
                         ?>
-                    </div>
 
+                    </div>
                 </div>
                 <div class="col-lg-5 p-0">
                     <div class="track__pic">
@@ -372,7 +472,6 @@ $tracks = mysqli_query($con, "
         </div>
     </section>
     <!-- Track Section End -->
-
     <!-- Youtube Section Begin -->
     <section class="youtube spad">
         <div class="container">
@@ -387,10 +486,9 @@ $tracks = mysqli_query($con, "
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="youtube__item">
-                        <div class="youtube__item__pic set-bg" data-setbg="img/youtube/youtube-1.jpg">
-                            <a href="https://www.youtube.com/watch?v=yJg-Y5byMMw?autoplay=1"
-                                class="play-btn video-popup"><i class="fa fa-play"></i></a>
-                        </div>
+                        <div class="youtube__item__pic set-bg" data-setbg="img/youtube/youtube-1.jpg"> <a
+                                href="https://www.youtube.com/watch?v=yJg-Y5byMMw?autoplay=1"
+                                class="play-btn video-popup"><i class="fa fa-play"></i></a> </div>
                         <div class="youtube__item__text">
                             <h4>David Guetta Miami Ultra Music Festival 2019</h4>
                         </div>
@@ -398,10 +496,9 @@ $tracks = mysqli_query($con, "
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="youtube__item">
-                        <div class="youtube__item__pic set-bg" data-setbg="img/youtube/youtube-2.jpg">
-                            <a href="https://www.youtube.com/watch?v=K4DyBUG242c?autoplay=1"
-                                class="play-btn video-popup"><i class="fa fa-play"></i></a>
-                        </div>
+                        <div class="youtube__item__pic set-bg" data-setbg="img/youtube/youtube-2.jpg"> <a
+                                href="https://www.youtube.com/watch?v=K4DyBUG242c?autoplay=1"
+                                class="play-btn video-popup"><i class="fa fa-play"></i></a> </div>
                         <div class="youtube__item__text">
                             <h4>Martin Garrix (Full live-set) | SLAM!Koningsdag</h4>
                         </div>
@@ -409,10 +506,9 @@ $tracks = mysqli_query($con, "
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="youtube__item">
-                        <div class="youtube__item__pic set-bg" data-setbg="img/youtube/youtube-3.jpg">
-                            <a href="https://www.youtube.com/watch?v=S19UcWdOA-I?autoplay=1"
-                                class="play-btn video-popup"><i class="fa fa-play"></i></a>
-                        </div>
+                        <div class="youtube__item__pic set-bg" data-setbg="img/youtube/youtube-3.jpg"> <a
+                                href="https://www.youtube.com/watch?v=S19UcWdOA-I?autoplay=1"
+                                class="play-btn video-popup"><i class="fa fa-play"></i></a> </div>
                         <div class="youtube__item__text">
                             <h4>Dimitri Vegas, Steve Aoki & Like Mike’s “3 Are Legend”</h4>
                         </div>
@@ -420,8 +516,130 @@ $tracks = mysqli_query($con, "
                 </div>
             </div>
         </div>
+    </section> <!-- Youtube Section End -->
+
+    <!-- Albums Section Begin -->
+    <style>
+        /* Section spacing */
+        .albums {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        /* Album card */
+        .album__item {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        /* Hover effect */
+        .album__item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Image */
+        .album__item__pic img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Text area */
+        .album__item__text {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Album title */
+        .album__item__text h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        /* Artist + year */
+        .album__item__text p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+    </style>
+
+    <section class="albums spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>Albums</h2>
+                        <h1>Latest Albums</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <?php
+                // Include database connection
+                include "./config/db_connection.php";
+
+                // Fetch albums with artist name and release year
+                $albums_query = "
+                SELECT albums.*, artists.artist_name
+                FROM albums
+                LEFT JOIN artists ON artists.id = albums.artist_id
+                ORDER BY albums.id DESC
+            ";
+                $albums = mysqli_query($con, $albums_query);
+
+                if (mysqli_num_rows($albums) > 0) {
+                    while ($album = mysqli_fetch_assoc($albums)) {
+                        ?>
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="album__item">
+                                <div class="album__item__pic">
+                                    <img src="media/<?php echo $album['image']; ?>" alt="" class="img-fluid">
+                                </div>
+                                <div class="album__item__text">
+                                    <h4><?php echo $album['album_name']; ?></h4>
+                                    <p><?php echo $album['artist_name']; ?> | <?php echo $album['release_year']; ?></p>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                } else {
+                    echo "<p>No albums found.</p>";
+                }
+                ?>
+            </div>
+        </div>
     </section>
-    <!-- Youtube Section End -->
+    <!-- Albums Section End -->
+
+    <script>
+        // jQuery to set background images dynamically
+        $(document).ready(function () {
+            $(".set-bg").each(function () {
+                var bg = $(this).data("setbg");
+                $(this).css("background-image", "url(" + bg + ")");
+            });
+        });
+    </script>
+
+
+    <script>
+        // jQuery to set background images dynamically
+        $(document).ready(function () {
+            $(".set-bg").each(function () {
+                var bg = $(this).data("setbg");
+                $(this).css("background-image", "url(" + bg + ")");
+            });
+        });
+    </script>
+
 
     <!-- Testimonial Section Begin -->
     <section class="testimonial spad">
@@ -648,6 +866,47 @@ $tracks = mysqli_query($con, "
             },
         });
     </script>
+
+    < <!-- js search -->
+        <script>
+            function toggleSearch() {
+                var form = document.getElementById("searchForm");
+                if (form.style.display === "block") {
+                    form.style.display = "none";
+                } else {
+                    form.style.display = "block";
+                }
+            }
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function updateCountdown() {
+                    const countdowns = document.querySelectorAll('.countdown');
+                    countdowns.forEach(span => {
+                        const eventDate = new Date(span.getAttribute('data-date'));
+                        const now = new Date();
+                        const diff = eventDate - now;
+
+                        if (diff <= 0) {
+                            span.textContent = "Event started";
+                            return;
+                        }
+
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                        const seconds = Math.floor((diff / 1000) % 60);
+
+                        span.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    });
+                }
+
+                updateCountdown(); // initial call
+                setInterval(updateCountdown, 1000); // update every second
+            });
+        </script>
+
 </body>
 
 </html>

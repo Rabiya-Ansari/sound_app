@@ -1,18 +1,38 @@
 <?php
 include "./config/db_connection.php";
 
-// Fetch music tracks with artist & album
+$search = "";
+
+if (isset($_GET['query']) && trim($_GET['query']) != "") {
+    $search = mysqli_real_escape_string($con, $_GET['query']);
+
+    // Use CONCAT_WS to avoid NULL issues and search multiple fields safely
+    $where = "WHERE 
+        musics.title LIKE '%$search%' OR
+        artists.artist_name LIKE '%$search%' OR
+        albums.album_name LIKE '%$search%' OR
+        musics.release_year LIKE '%$search%'";
+} else {
+    $where = "";
+}
+
+// Fetch tracks with artist, image, album, and search applied
 $tracks = mysqli_query($con, "
     SELECT 
         musics.*, 
         artists.artist_name,
-        artists.artist_image,
+        artists.artist_image,   -- make sure image is included
         albums.album_name
     FROM musics
     LEFT JOIN artists ON artists.id = musics.artist_id
     LEFT JOIN albums ON albums.id = musics.album_id
+    $where
     ORDER BY musics.id DESC
 ");
+
+
+// search logics
+
 
 include './base/header.php';
 ?>

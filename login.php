@@ -2,7 +2,7 @@
 session_start();
 include 'config/db_connection.php';
 
-$error = ""; // default
+$error = "";
 
 // LOGIN HANDLER
 if (isset($_POST['login'])) {

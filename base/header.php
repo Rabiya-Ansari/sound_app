@@ -1,4 +1,5 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -22,8 +23,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-     
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     <!-- Css Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/sound/css/bootstrap.min.css" type="text/css">
@@ -61,10 +63,73 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <li><a href="./musics.php">Musics</a></li>
                                 <li><a href="./videos.php">Videos</a></li>
                                 <li><a href="./contact.php">Contact</a></li>
+
+                                <!-- Search Icon -->
+                                <li class="search-box" style="background:transparent; list-style:none;">
+
+                                    <style>
+                                        .search-box {
+                                            display: flex;
+                                            align-items: center;
+                                        }
+
+                                        .search-form form {
+                                            display: flex;
+                                            align-items: center;
+                                            background: rgba(255, 255, 255, 0.1);
+                                            backdrop-filter: blur(8px);
+                                            border-radius: 50px;
+                                            padding: 5px 10px;
+                                            border: 1px solid rgba(255, 255, 255, 0.3);
+                                        }
+
+                                        .search-form input {
+                                            border: none;
+                                            outline: none;
+                                            background: transparent;
+                                            color: #fff;
+                                            padding: 8px 12px;
+                                            width: 180px;
+                                            font-size: 14px;
+                                        }
+
+                                        .search-form input::placeholder {
+                                            color: rgba(255, 255, 255, 0.7);
+                                        }
+
+                                        .search-form button {
+                                            background: transparent;
+                                            border: none;
+                                            color: #fff;
+                                            cursor: pointer;
+                                            font-size: 16px;
+                                            padding: 5px 10px;
+                                            border-radius: 50%;
+                                            transition: 0.3s ease;
+                                        }
+
+                                        .search-form button:hover {
+                                            background: rgba(255, 255, 255, 0.2);
+                                        }
+                                    </style>
+
+                                    <!-- Search Form -->
+                                    <div id="searchForm" class="search-form">
+                                        <form method="GET" action="">
+                                            <input type="text" name="query" placeholder="Search Artist, Album, Year..."
+                                                required>
+                                            <button type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </li>
+
                             </ul>
                         </nav>
+
                         <div class="header__right__social">
-                            <a href=""><i class="fas fa-search"></i></a>
                             <?php if (isset($_SESSION['user_id']) && !empty($_SESSION['name'])): ?>
                                 <div class="dropdown">
                                     <a href="#" class="dropdown-toggle text-white" data-bs-toggle="dropdown">
@@ -96,3 +161,15 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </header>
     <!-- Header Section End -->
+
+    <!-- js search -->
+    <script>
+        function toggleSearch() {
+            var form = document.getElementById("searchForm");
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            } else {
+                form.style.display = "block";
+            }
+        }
+    </script>
