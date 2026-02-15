@@ -302,6 +302,42 @@ $tracks = mysqli_query($con, "
             </div>
         </div>
     </section>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const eventCountdowns = document.querySelectorAll(".event .countdown");
+
+    eventCountdowns.forEach(function (el) {
+
+        const eventDate = new Date(el.getAttribute("data-date")).getTime();
+
+        const eventTimer = setInterval(function () {
+
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance < 0) {
+                clearInterval(eventTimer);
+                el.innerHTML = "Event Started";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            el.innerHTML = days + "d " + hours + "h "
+                         + minutes + "m " + seconds + "s ";
+
+        }, 1000);
+
+    });
+
+});
+</script>
+
     <!-- Event Section End -->
 
 
@@ -630,16 +666,6 @@ $tracks = mysqli_query($con, "
     </script>
 
 
-    <script>
-        // jQuery to set background images dynamically
-        $(document).ready(function () {
-            $(".set-bg").each(function () {
-                var bg = $(this).data("setbg");
-                $(this).css("background-image", "url(" + bg + ")");
-            });
-        });
-    </script>
-
 
     <!-- Testimonial Section Begin -->
     <section class="testimonial spad">
@@ -878,6 +904,7 @@ $tracks = mysqli_query($con, "
                 }
             }
         </script>
+
 
 </body>
 
