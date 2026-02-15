@@ -879,34 +879,6 @@ $tracks = mysqli_query($con, "
             }
         </script>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                function updateCountdown() {
-                    const countdowns = document.querySelectorAll('.countdown');
-                    countdowns.forEach(span => {
-                        const eventDate = new Date(span.getAttribute('data-date'));
-                        const now = new Date();
-                        const diff = eventDate - now;
-
-                        if (diff <= 0) {
-                            span.textContent = "Event started";
-                            return;
-                        }
-
-                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-                        const seconds = Math.floor((diff / 1000) % 60);
-
-                        span.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                    });
-                }
-
-                updateCountdown(); // initial call
-                setInterval(updateCountdown, 1000); // update every second
-            });
-        </script>
-
 </body>
 
 </html>
