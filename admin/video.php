@@ -82,7 +82,7 @@ if (isset($_POST['update_video'])) {
     $language = (int) $_POST['language'];
     $year = (int) $_POST['year'];
 
-    mysqli_query($con, "
+    $update_sql = "
         UPDATE videos SET
         title='$title',
         artist_id='$artist',
@@ -90,14 +90,47 @@ if (isset($_POST['update_video'])) {
         language_id='$language',
         release_year='$year'
         WHERE id=$id
-    ");
+    ";
 
+    // Optional new video upload
+    if (isset($_FILES['video_file']) && $_FILES['video_file']['name'] != '') {
+        $file = $_FILES['video_file']['name'];
+        $tmp = $_FILES['video_file']['tmp_name'];
+        $folder = "../media/";
+        if (!is_dir($folder)) mkdir($folder, 0777, true);
+        $new_name = time() . "_" . $file;
+
+        if (move_uploaded_file($tmp, $folder . $new_name)) {
+            // Delete old video
+            $old_res = mysqli_query($con, "SELECT video_file FROM videos WHERE id=$id");
+            $old_row = mysqli_fetch_assoc($old_res);
+            if ($old_row && file_exists($folder . $old_row['video_file'])) {
+                unlink($folder . $old_row['video_file']);
+            }
+
+            $update_sql = "
+                UPDATE videos SET
+                title='$title',
+                artist_id='$artist',
+                genre_id='$genre',
+                language_id='$language',
+                release_year='$year',
+                video_file='$new_name'
+                WHERE id=$id
+            ";
+        }
+    }
+
+    mysqli_query($con, $update_sql);
+
+    // SweetAlert success message
     $_SESSION['message'] = "Video updated successfully!";
     $_SESSION['message_type'] = "success";
 
     header("Location: video.php");
     exit;
 }
+
 /* =====================
    FETCH SELECT DATA
 ===================== */
@@ -212,12 +245,13 @@ endif; ?>
                             </select>
                         </div>
 
-                        <?php if (!$editData): ?>
-                            <div class="mb-3">
-                                <label>Video File</label>
-                                <input type="file" name="video_file" class="form-control" required>
-                            </div>
-                        <?php endif; ?>
+                       <div class="mb-3">
+                          <label><?= $editData ? 'Change Video File (Optional)' : 'Video File' ?></label>
+                            <input type="file" name="video_file" class="form-control" <?= $editData ? '' : 'required' ?> required>
+                              <?php if ($editData && !empty($editData['video_file'])): ?>
+                               <small class="text-muted">Current file: <?= $editData['video_file'] ?></small>
+                              <?php endif; ?>
+                        </div>
 
                         <button class="btn btn-primary"
                             name="<?= $editData ? 'update_video' : 'add_video' ?>">

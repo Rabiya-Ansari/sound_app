@@ -2,18 +2,17 @@
 include "./auth.php";
 include "../config/db_connection.php";
 
-// delete logics
+// DELETE LOGIC
 if (isset($_GET['delete'])) {
     $delete_id = (int) $_GET['delete'];
-
     $query = "DELETE FROM years WHERE id = $delete_id";
     
     if (mysqli_query($con, $query)) {
         $_SESSION['message'] = "Year deleted successfully!";
         $_SESSION['message_type'] = "success";
     } else {
-        $_SESSION['message'] = "Error: Could not delete year. Check if it is linked to any albums.";
-        $_SESSION['message_type'] = "danger";
+        $_SESSION['message'] = "Error: Could not delete year. It may be linked to albums.";
+        $_SESSION['message_type'] = "error";
     }
 
     header("Location: years.php");
@@ -23,7 +22,6 @@ if (isset($_GET['delete'])) {
 /* EDIT LOGIC */
 $edit_id = isset($_GET['edit']) ? (int) $_GET['edit'] : 0;
 $year_to_edit = null;
-
 if ($edit_id > 0) {
     $res = mysqli_query($con, "SELECT * FROM years WHERE id=$edit_id");
     $year_to_edit = mysqli_fetch_assoc($res);
@@ -35,9 +33,12 @@ if (isset($_POST['save_year'])) {
 
     if ($year_to_edit) {
         mysqli_query($con, "UPDATE years SET `release_year`=$year WHERE id=$edit_id");
+        $_SESSION['message'] = "Year updated successfully!";
     } else {
         mysqli_query($con, "INSERT INTO years (`release_year`) VALUES ($year)");
+        $_SESSION['message'] = "Year added successfully!";
     }
+    $_SESSION['message_type'] = "success";
 
     header("Location: years.php");
     exit;
@@ -48,6 +49,8 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
 ?>
 
 <?php include "./base/header.php"; ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="content-page">
     <div class="content">
@@ -102,11 +105,9 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
                                         <a href="?edit=<?= $row['id'] ?>" class="btn btn-sm btn-dark">
                                             <i class="ri-pencil-line"></i> Edit
                                         </a>
-                                        <a href="?delete=<?= $row['id'] ?>"
-                                            class="btn btn-sm btn-danger delete-btn"
-                                            onclick="return confirm('Are you sure you want to delete this year.');">
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="<?= $row['id'] ?>">
                                             <i class="ri-delete-bin-line"></i> Delete
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
@@ -121,5 +122,37 @@ $years = mysqli_query($con, "SELECT * FROM years ORDER BY `release_year` DESC");
         </div>
     </div>
 </div>
+
+<script>
+// SweetAlert2 delete confirmation
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This year will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '?delete=' + id;
+            }
+        });
+    });
+});
+
+
+<?php if (isset($_SESSION['message'])): ?>
+Swal.fire({
+    icon: '<?= $_SESSION['message_type'] ?>',
+    title: '<?= $_SESSION['message'] ?>',
+    timer: 2000,
+    showConfirmButton: false
+});
+<?php unset($_SESSION['message'], $_SESSION['message_type']); endif; ?>
+</script>
 
 <?php include "./base/footer.php"; ?>

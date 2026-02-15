@@ -112,8 +112,6 @@ if (isset($_POST['login'])) {
                     </form>
 
                     <div class="login-links text-center mt-3">
-                        <a href="#">Forgot password?</a>
-                        <br>
                         <span class="text-light">No account?</span>
                         <a href="/sound/admin/registration.php">Register</a>
                     </div>

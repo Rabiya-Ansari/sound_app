@@ -3,9 +3,15 @@ include 'auth.php';
 include '../config/db_connection.php';
 
 $reviews = mysqli_query($con, "
-    SELECT reviews.*, users.name, users.email 
+    SELECT 
+        reviews.*,
+        users.name,
+        users.email,
+        musics.title AS music_title
     FROM reviews
     JOIN users ON reviews.user_id = users.id
+    LEFT JOIN musics ON reviews.item_id = musics.id
+    WHERE reviews.item_type = 'music'
     ORDER BY reviews.id DESC
 ");
 ?>
@@ -21,16 +27,16 @@ $reviews = mysqli_query($con, "
                 <h4 class="mb-0">Reviews & Ratings</h4>
             </div>
 
-            <!-- Card -->
             <div class="card shadow-sm border-0">
                 <div class="card-body p-0">
 
                     <div class="table-responsive">
-                    <table class="table table-hover justify-content-center align-middle text-center table-bordered">
+                        <table class="table table-hover table-bordered text-center align-middle justify-content-center">
                             <thead class="table-dark">
                                 <tr>
                                     <th>User</th>
                                     <th class="d-none d-sm-table-cell">Email</th>
+                                    <th>Song</th>
                                     <th>Rating</th>
                                     <th>Review</th>
                                     <th class="d-none d-md-table-cell">Date</th>
@@ -42,28 +48,33 @@ $reviews = mysqli_query($con, "
                                 <?php if (mysqli_num_rows($reviews) > 0): ?>
                                     <?php while ($row = mysqli_fetch_assoc($reviews)): ?>
                                         <tr>
-                                            <td class="fw-semibold">
+                                            <td>
                                                 <?= htmlspecialchars($row['name']); ?>
                                             </td>
 
-                                            <td class="d-none d-sm-table-cell text-muted">
+                                            <td>
                                                 <?= htmlspecialchars($row['email']); ?>
                                             </td>
 
                                             <td>
+                                                <?= htmlspecialchars($row['music_title'] ?? 'Unknown'); ?>
+                                            </td>
+
+                                            <td>
                                                 <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                    <i
-                                                        class="<?= $i <= $row['rating'] ? 'ri-star-fill text-warning' : 'ri-star-line text-muted' ?>"></i>
+                                                    <i class="<?= $i <= $row['rating']
+                                                        ? 'ri-star-fill text-warning'
+                                                        : 'ri-star-line text-muted' ?>"></i>
                                                 <?php endfor; ?>
                                             </td>
 
-                                            <td class="text-muted text-start">
-                                                <div class="mx-auto" style="max-width:300px;">
+                                            <td>
+                                                <di>
                                                     <?= htmlspecialchars($row['review']); ?>
-                                                </div>
+                                                </di>
                                             </td>
 
-                                            <td class="d-none d-md-table-cell text-muted">
+                                            <td>
                                                 <?= date('d M Y', strtotime($row['created_at'])); ?>
                                             </td>
 
@@ -77,7 +88,7 @@ $reviews = mysqli_query($con, "
                                     <?php endwhile; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="6" class="text-muted py-4">
+                                        <td class="text-muted py-4">
                                             No reviews found.
                                         </td>
                                     </tr>
@@ -93,8 +104,5 @@ $reviews = mysqli_query($con, "
         </div>
     </div>
 </div>
-
-
-
 
 <?php include './base/footer.php'; ?>

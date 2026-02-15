@@ -2,9 +2,8 @@
 include "./auth.php";
 include '../config/db_connection.php';
 
-// =====================
 // DELETE LOGIC
-// =====================
+
 if (isset($_GET['delete'])) {
     $delete_id = (int) $_GET['delete'];
 
@@ -24,9 +23,8 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-// =====================
 // EDIT LOGIC
-// =====================
+
 $edit_id = isset($_GET['edit']) ? (int) $_GET['edit'] : 0;
 $artist_to_edit = null;
 if ($edit_id > 0) {
@@ -34,18 +32,18 @@ if ($edit_id > 0) {
     $artist_to_edit = mysqli_fetch_assoc($res);
 }
 
-// =====================
+
 // ADD / UPDATE LOGIC
-// =====================
+
 if (isset($_POST['save_artist'])) {
     $name = mysqli_real_escape_string($con, $_POST['name']);
-    
+
     $image_name = null;
 
     // handle file upload
     if (isset($_FILES['artist_image']) && $_FILES['artist_image']['error'] == 0) {
         $ext = pathinfo($_FILES['artist_image']['name'], PATHINFO_EXTENSION);
-        $image_name = time() . '_' . rand(1000,9999) . '.' . $ext;
+        $image_name = time() . '_' . rand(1000, 9999) . '.' . $ext;
         move_uploaded_file($_FILES['artist_image']['tmp_name'], '../media/' . $image_name);
     }
 
@@ -72,15 +70,13 @@ if (isset($_POST['save_artist'])) {
     exit;
 }
 
-// =====================
 // FETCH ALL ARTISTS
-// =====================
 $artists = mysqli_query($con, "SELECT * FROM artists ORDER BY artist_name ASC");
 ?>
 
 <?php include './base/header.php'; ?>
 
-<!-- SweetAlert2 CDN -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <?php if (isset($_SESSION['message'])): ?>
@@ -92,15 +88,13 @@ $artists = mysqli_query($con, "SELECT * FROM artists ORDER BY artist_name ASC");
             timer: 2000
         });
     </script>
-<?php
+    <?php
     unset($_SESSION['message'], $_SESSION['message_type']);
 endif; ?>
 
 <div class="content-page">
     <div class="content">
         <div class="container-fluid mt-4">
-
-            <!-- ADD / EDIT ARTIST FORM -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h4><?= $artist_to_edit ? '✏️ Edit Artist' : '➕ Add New Artist' ?></h4>
@@ -118,7 +112,8 @@ endif; ?>
                             <label class="form-label">Artist Image</label>
                             <input type="file" name="artist_image" class="form-control" <?= $artist_to_edit ? '' : 'required' ?> required>
                             <?php if ($artist_to_edit && $artist_to_edit['artist_image']): ?>
-                                <img src="../media/<?= htmlspecialchars($artist_to_edit['artist_image']) ?>" alt="Artist Image" style="width: 100px; margin-top: 10px;">
+                                <img src="../media/<?= htmlspecialchars($artist_to_edit['artist_image']) ?>"
+                                    alt="Artist Image" style="width: 100px; margin-top: 10px;">
                             <?php endif; ?>
                         </div>
 
@@ -131,8 +126,7 @@ endif; ?>
                     </form>
                 </div>
             </div>
-
-            <!-- ALL ARTISTS TABLE -->
+            <!-- Table Artist -->
             <div class="card">
                 <div class="card-header">
                     <h4>🎤 All Artists</h4>
@@ -148,13 +142,15 @@ endif; ?>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = 1; while ($row = mysqli_fetch_assoc($artists)): ?>
+                            <?php $i = 1;
+                            while ($row = mysqli_fetch_assoc($artists)): ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($row['artist_name']) ?></td>
                                     <td>
                                         <?php if ($row['artist_image']): ?>
-                                            <img src="../media/<?= htmlspecialchars($row['artist_image']) ?>" style="width: 80px; height: auto;">
+                                            <img src="../media/<?= htmlspecialchars($row['artist_image']) ?>"
+                                                style="width: 80px; height: auto;">
                                         <?php else: ?>
                                             <span>No image</span>
                                         <?php endif; ?>
@@ -185,7 +181,7 @@ endif; ?>
 <script>
     // SweetAlert delete confirmation
     document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+        btn.addEventListener('click', function (e) {
             e.preventDefault();
             let href = this.getAttribute('href');
             Swal.fire({

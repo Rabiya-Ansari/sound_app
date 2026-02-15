@@ -2,27 +2,25 @@
 include "./auth.php";
 include '../config/db_connection.php';
 
-// delete logics
+// DELETE LOGIC
 if (isset($_GET['delete'])) {
     $delete_id = (int) $_GET['delete'];
 
     $query = "DELETE FROM languages WHERE id = $delete_id";
-    
+
     if (mysqli_query($con, $query)) {
         $_SESSION['message'] = "Language deleted successfully!";
         $_SESSION['message_type'] = "success";
     } else {
         $_SESSION['message'] = "Error: Could not delete language. It might be linked to an existing album.";
-        $_SESSION['message_type'] = "danger";
+        $_SESSION['message_type'] = "error";
     }
 
     header("Location: languages.php");
     exit;
 }
 
-/* =====================
-   FETCH LANGUAGE IF EDITING
-===================== */
+/* FETCH LANGUAGE IF EDITING */
 $edit_id = isset($_GET['edit']) ? (int) $_GET['edit'] : 0;
 $language_to_edit = null;
 if ($edit_id > 0) {
@@ -30,27 +28,31 @@ if ($edit_id > 0) {
     $language_to_edit = mysqli_fetch_assoc($res);
 }
 
-//add logics
+// ADD / UPDATE LOGIC
 if (isset($_POST['save_language'])) {
     $name = mysqli_real_escape_string($con, $_POST['name']);
 
     if ($language_to_edit) {
-
         mysqli_query($con, "UPDATE languages SET language_name='$name' WHERE id=$edit_id");
+        $_SESSION['message'] = "Language updated successfully!";
     } else {
-
         mysqli_query($con, "INSERT INTO languages (language_name) VALUES ('$name')");
+        $_SESSION['message'] = "Language added successfully!";
     }
+    $_SESSION['message_type'] = "success";
 
     header("Location: languages.php");
     exit;
 }
 
-//edit logics
+// FETCH ALL LANGUAGES
 $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name ASC");
 ?>
 
 <?php include './base/header.php'; ?>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="content-page">
     <div class="content">
@@ -103,11 +105,9 @@ $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name 
                                         <a href="?edit=<?= $row['id'] ?>" class="btn btn-sm btn-dark">
                                             <i class="ri-pencil-line"></i> Edit
                                         </a>
-                                        <a href="?delete=<?= $row['id'] ?>"
-                                            class="btn btn-sm btn-danger delete-btn"
-                                            onclick="return confirm('Are you sure you want to delete this language.');">
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="<?= $row['id'] ?>">
                                             <i class="ri-delete-bin-line"></i> Delete
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
@@ -125,5 +125,36 @@ $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name 
         </div>
     </div>
 </div>
+
+<script>
+    // SweetAlert2 delete confirmation
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.dataset.id;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This language will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '?delete=' + id;
+                }
+            });
+        });
+    });
+
+<?php if (isset($_SESSION['message'])): ?>
+    Swal    .fire({
+            icon: '<?= $_SESSION['message_type'] ?>',
+            title: '<?= $_SESSION['message'] ?>',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    <?php unset($_SESSION['message'], $_SESSION['message_type']); endif; ?>
+</script>
 
 <?php include './base/footer.php'; ?>

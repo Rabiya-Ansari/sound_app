@@ -63,96 +63,30 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <li><a href="./musics.php">Musics</a></li>
                                 <li><a href="./videos.php">Videos</a></li>
                                 <li><a href="./contact.php">Contact</a></li>
-
-                                <!-- Search Icon -->
-                                <li class="search-box" style="background:transparent; list-style:none;">
-
-                                    <style>
-                                        .search-box {
-                                            display: flex;
-                                            align-items: center;
-                                        }
-
-                                        .search-form form {
-                                            display: flex;
-                                            align-items: center;
-                                            background: rgba(255, 255, 255, 0.1);
-                                            backdrop-filter: blur(8px);
-                                            border-radius: 50px;
-                                            padding: 5px 10px;
-                                            border: 1px solid rgba(255, 255, 255, 0.3);
-                                        }
-
-                                        .search-form input {
-                                            border: none;
-                                            outline: none;
-                                            background: transparent;
-                                            color: #fff;
-                                            padding: 8px 12px;
-                                            width: 180px;
-                                            font-size: 14px;
-                                        }
-
-                                        .search-form input::placeholder {
-                                            color: rgba(255, 255, 255, 0.7);
-                                        }
-
-                                        .search-form button {
-                                            background: transparent;
-                                            border: none;
-                                            color: #fff;
-                                            cursor: pointer;
-                                            font-size: 16px;
-                                            padding: 5px 10px;
-                                            border-radius: 50%;
-                                            transition: 0.3s ease;
-                                        }
-
-                                        .search-form button:hover {
-                                            background: rgba(255, 255, 255, 0.2);
-                                        }
-                                    </style>
-
-                                    <!-- Search Form -->
-                                    <div id="searchForm" class="search-form">
-                                        <form method="GET" action="">
-                                            <input type="text" name="query" placeholder="Search Artist, Album, Year..."
-                                                required>
-                                            <button type="submit">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-
-                                </li>
+                                <div class="header__right__social">
+                                    <?php if (isset($_SESSION['user_id']) && !empty($_SESSION['name'])): ?>
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle text-white">
+                                                <i class="fa fa-user"></i>
+                                                <?= htmlspecialchars($_SESSION['name']) ?>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="/sound/user/logout.php">
+                                                        Logout
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    <?php else: ?>
+                                        <a href="/sound/login.php">Login</a>
+                                        <a href="/sound/admin/registration.php">SignUp</a>
+                                    <?php endif; ?>
+                                </div>
 
                             </ul>
+
                         </nav>
-
-                        <div class="header__right__social">
-                            <?php if (isset($_SESSION['user_id']) && !empty($_SESSION['name'])): ?>
-                                <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle text-white" data-bs-toggle="dropdown">
-                                        <i class="fa fa-user"></i>
-                                        <?= htmlspecialchars($_SESSION['name']) ?>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a style="color:black; font-size: 18px; font-weight:bold;"
-                                                onmouseover="this.style.color='#5c00ff'"
-                                                onmouseout="this.style.color='black'" class="dropdown-item"
-                                                href="/sound/user/logout.php">
-                                                Logout
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            <?php else: ?>
-                                <a href="/sound/login.php">Login</a>
-                                <a href="/sound/admin/registration.php">SignUp</a>
-                            <?php endif; ?>
-
-                        </div>
 
                     </div>
                 </div>

@@ -5,12 +5,14 @@ $reviews = mysqli_query($con, "
     SELECT 
         reviews.review,
         reviews.rating,
-        users.name
+        users.name,
+        musics.title AS song_title
     FROM reviews
     JOIN users ON reviews.user_id = users.id
-    WHERE reviews.rating > 0
+    LEFT JOIN musics ON reviews.item_id = musics.id
+    WHERE reviews.item_type = 'music'
     ORDER BY reviews.id DESC
-    LIMIT 6
+    LIMIT 10
 ");
 
 
@@ -36,34 +38,6 @@ $tracks = mysqli_query($con, "
     ORDER BY musics.id DESC
     LIMIT 6
 ");
-// search logics
-$search = "";
-
-if (isset($_GET['query']) && trim($_GET['query']) != "") {
-    $search = mysqli_real_escape_string($con, $_GET['query']);
-
-    $where = "WHERE 
-        musics.title LIKE '%$search%' OR
-        artists.artist_name LIKE '%$search%' OR
-        albums.album_name LIKE '%$search%' OR
-        musics.release_year LIKE '%$search%'";
-} else {
-    $where = "";
-}
-
-// Fetch tracks with artist, image, album, and search applied
-$tracks = mysqli_query($con, "
-    SELECT 
-        musics.*, 
-        artists.artist_name,
-        albums.album_name
-    FROM musics
-    LEFT JOIN artists ON artists.id = musics.artist_id
-    LEFT JOIN albums ON albums.id = musics.album_id
-    $where
-    ORDER BY musics.id DESC
-");
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -102,6 +76,9 @@ $tracks = mysqli_query($con, "
     <link rel="stylesheet" href="/sound/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="/sound/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/sound/css/style.css" type="text/css">
+    <style>
+        
+    </style>
 </head>
 
 <body>
@@ -128,95 +105,31 @@ $tracks = mysqli_query($con, "
                                 <li><a href="./musics.php">Musics</a></li>
                                 <li><a href="./videos.php">Videos</a></li>
                                 <li><a href="./contact.php">Contact</a></li>
-
-                                <!-- Search Icon -->
-                                <li class="search-box" style="background:transparent; list-style:none;">
-
-                                    <style>
-                                        .search-box {
-                                            display: flex;
-                                            align-items: center;
-                                        }
-
-                                        .search-form form {
-                                            display: flex;
-                                            align-items: center;
-                                            background: rgba(255, 255, 255, 0.1);
-                                            backdrop-filter: blur(8px);
-                                            border-radius: 50px;
-                                            padding: 5px 10px;
-                                            border: 1px solid rgba(255, 255, 255, 0.3);
-                                        }
-
-                                        .search-form input {
-                                            border: none;
-                                            outline: none;
-                                            background: transparent;
-                                            color: #fff;
-                                            padding: 8px 12px;
-                                            width: 180px;
-                                            font-size: 14px;
-                                        }
-
-                                        .search-form input::placeholder {
-                                            color: rgba(255, 255, 255, 0.7);
-                                        }
-
-                                        .search-form button {
-                                            background: transparent;
-                                            border: none;
-                                            color: #fff;
-                                            cursor: pointer;
-                                            font-size: 16px;
-                                            padding: 5px 10px;
-                                            border-radius: 50%;
-                                            transition: 0.3s ease;
-                                        }
-
-                                        .search-form button:hover {
-                                            background: rgba(255, 255, 255, 0.2);
-                                        }
-                                    </style>
-
-                                    <!-- Search Form -->
-                                    <div id="searchForm" class="search-form">
-                                        <form action="" method="GET">
-                                            <input type="text" name="query" placeholder="Search here..." required>
-                                            <button type="submit">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-
-                                </li>
+                                <div class="header__right__social">
+                                    <?php if (isset($_SESSION['user_id']) && !empty($_SESSION['name'])): ?>
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle text-white">
+                                                <i class="fa fa-user"></i>
+                                                <?= htmlspecialchars($_SESSION['name']) ?>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="/sound/user/logout.php">
+                                                        Logout
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    <?php else: ?>
+                                        <a href="/sound/login.php">Login</a>
+                                        <a href="/sound/admin/registration.php">SignUp</a>
+                                    <?php endif; ?>
+                                </div>
 
                             </ul>
+
                         </nav>
-                        <div class="header__right__social">
-
-                            <?php if (isset($_SESSION['user_id']) && !empty($_SESSION['name'])): ?>
-                                <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle text-white" data-bs-toggle="dropdown">
-                                        <i class="fa fa-user"></i>
-                                        <?= htmlspecialchars($_SESSION['name']) ?>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a style="color:black; font-size: 18px; font-weight:bold;"
-                                                onmouseover="this.style.color='#5c00ff'"
-                                                onmouseout="this.style.color='black'" class="dropdown-item"
-                                                href="/sound/user/logout.php">
-                                                Logout
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            <?php else: ?>
-                                <a href="/sound/login.php">Login</a>
-                                <a href="/sound/admin/registration.php">SignUp</a>
-                            <?php endif; ?>
-
-                        </div>
 
                     </div>
                 </div>
@@ -304,40 +217,39 @@ $tracks = mysqli_query($con, "
     </section>
 
     <script>
-document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
 
-    const eventCountdowns = document.querySelectorAll(".event .countdown");
+            const eventCountdowns = document.querySelectorAll(".event .countdown");
 
-    eventCountdowns.forEach(function (el) {
+            eventCountdowns.forEach(function (el) {
 
-        const eventDate = new Date(el.getAttribute("data-date")).getTime();
+                const eventDate = new Date(el.getAttribute("data-date")).getTime();
 
-        const eventTimer = setInterval(function () {
+                const eventTimer = setInterval(function () {
 
-            const now = new Date().getTime();
-            const distance = eventDate - now;
+                    const now = new Date().getTime();
+                    const distance = eventDate - now;
 
-            if (distance < 0) {
-                clearInterval(eventTimer);
-                el.innerHTML = "Event Started";
-                return;
-            }
+                    if (distance < 0) {
+                        clearInterval(eventTimer);
+                        el.innerHTML = "Event Started";
+                        return;
+                    }
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            el.innerHTML = days + "d " + hours + "h "
-                         + minutes + "m " + seconds + "s ";
+                    el.innerHTML = days + "d " + hours + "h "
+                        + minutes + "m " + seconds + "s ";
 
-        }, 1000);
+                }, 1000);
 
-    });
+            });
 
-});
-</script>
-
+        });
+    </script>
     <!-- Event Section End -->
 
 
@@ -556,13 +468,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <!-- Albums Section Begin -->
     <style>
-        /* Section spacing */
         .albums {
             padding: 80px 0;
             background: #f8f9fa;
         }
 
-        /* Album card */
         .album__item {
             background: #ffffff;
             border: 1px solid #e5e5e5;
@@ -570,13 +480,11 @@ document.addEventListener("DOMContentLoaded", function () {
             margin-bottom: 30px;
         }
 
-        /* Hover effect */
         .album__item:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
-        /* Image */
         .album__item__pic img {
             width: 100%;
             height: 250px;
@@ -584,13 +492,11 @@ document.addEventListener("DOMContentLoaded", function () {
             display: block;
         }
 
-        /* Text area */
         .album__item__text {
             padding: 20px;
             text-align: center;
         }
 
-        /* Album title */
         .album__item__text h4 {
             font-size: 18px;
             font-weight: 600;
@@ -598,7 +504,6 @@ document.addEventListener("DOMContentLoaded", function () {
             color: #111;
         }
 
-        /* Artist + year */
         .album__item__text p {
             font-size: 14px;
             color: #666;
@@ -618,10 +523,8 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="row">
                 <?php
-                // Include database connection
                 include "./config/db_connection.php";
 
-                // Fetch albums with artist name and release year
                 $albums_query = "
                 SELECT albums.*, artists.artist_name
                 FROM albums
@@ -666,6 +569,16 @@ document.addEventListener("DOMContentLoaded", function () {
     </script>
 
 
+    <script>
+        // jQuery to set background images dynamically
+        $(document).ready(function () {
+            $(".set-bg").each(function () {
+                var bg = $(this).data("setbg");
+                $(this).css("background-image", "url(" + bg + ")");
+            });
+        });
+    </script>
+
 
     <!-- Testimonial Section Begin -->
     <section class="testimonial spad">
@@ -673,7 +586,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="row mb-4">
                 <div class="col-lg-12 text-center">
                     <div class="section-title">
-                        <h2>Testimonials</h2>
+                        <h2>Reviews</h2>
                         <h1>What our users say</h1>
                     </div>
                 </div>
@@ -685,66 +598,41 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="swiper-wrapper">
                         <?php while ($row = mysqli_fetch_assoc($reviews)): ?>
                             <div class="swiper-slide">
-                                <div class="testimonial__item p-4"
-                                    style="background: linear-gradient(to bottom, #5c00ff, #1a0000); color: #fff; border-radius: 10px;">
-                                    <h4 style="color:white; font-weight: bold;"><?= htmlspecialchars($row['name']) ?></h4>
-                                    <div class="rating mb-2" style="color:yellow;">
-                                        <?php
-                                        $rating = (int) $row['rating'];
-                                        for ($i = 1; $i <= 5; $i++) {
-                                            echo $i <= $rating
-                                                ? '<i class="fa fa-star"></i>'
-                                                : '<i class="fa fa-star-o"></i>';
-                                        }
-                                        ?>
+                                <div class="testimonial__item p-4 text-white rounded-3"
+                                    style="background: linear-gradient(to bottom, #5c00ff, #1a0000);">
+                                    <h4 class="fw-bold"><?= htmlspecialchars($row['name']) ?></h4>
+
+                                    <!-- Song title with stars inline -->
+                                    <div class="d-flex mb-2 text-white-50 justify-content-between">
+                                        <span class="me-2">🎵
+                                            <?= htmlspecialchars($row['song_title'] ?? 'Unknown Track') ?></span>
+                                        <span class="rating text-warning ">
+                                            <?php
+                                            $rating = (int) $row['rating'];
+                                            for ($i = 1; $i <= 5; $i++) {
+                                                echo $i <= $rating
+                                                    ? '<i class="fa fa-star"></i>'
+                                                    : '<i class="fa fa-star-o"></i>';
+                                            }
+                                            ?>
+                                        </span>
                                     </div>
-                                    <p style="color:white;"><?= nl2br(htmlspecialchars($row['review'])) ?></p>
+
+                                    <p class="mb-0"><?= nl2br(htmlspecialchars($row['review'])) ?></p>
                                 </div>
                             </div>
                         <?php endwhile; ?>
                     </div>
 
                     <!-- Slider navigation -->
-                    <div style="color:black;" class="swiper-button-next"></div>
-                    <div style="color:black;" class="swiper-button-prev"></div>
-                    <div style="color:white;" class="swiper-pagination"></div>
+                    <div class="swiper-button-prev text-dark"></div>
+                    <div class="swiper-pagination text-white"></div>
+                    <div class="swiper-button-next text-dark"></div>
+
+
                 </div>
             <?php else: ?>
-                <p class="text-center">No reviews yet.</p>
-            <?php endif; ?>
-
-            <!-- Review Form (kept intact for logged-in users) -->
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <div class="row mt-5">
-                    <div class="col-lg-12">
-                        <h3>Leave a Review</h3>
-                        <form method="POST" action="submit_review.php">
-                            <div class="mb-3">
-                                <label>Rating</label>
-                                <select name="rating" class="form-control" required>
-                                    <option value="">Select</option>
-                                    <option value="5">★★★★★</option>
-                                    <option value="4">★★★★</option>
-                                    <option value="3">★★★</option>
-                                    <option value="2">★★</option>
-                                    <option value="1">★</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label>Review</label>
-                                <textarea name="review" class="form-control" required style="resize:none;"></textarea>
-                            </div>
-
-                            <button style="background-color: white; border:2px solid #5c00ff; padding:8px;">SUBMIT
-                                REVIEW</button>
-                        </form>
-                    </div>
-                </div>
-            <?php else: ?>
-                <div class="col-12 text-center mt-4">
-                    <a href="/sound/login.php" style="color:black; font-weight: bold;  ">Login to leave a review</a>
-                </div>
+                <p class="text-center text-muted">No reviews yet.</p>
             <?php endif; ?>
 
         </div>
@@ -892,19 +780,17 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         });
     </script>
-
-    < <!-- js search -->
-        <script>
-            function toggleSearch() {
-                var form = document.getElementById("searchForm");
-                if (form.style.display === "block") {
-                    form.style.display = "none";
-                } else {
-                    form.style.display = "block";
-                }
+    <!-- js search -->
+    <script>
+        function toggleSearch() {
+            var form = document.getElementById("searchForm");
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            } else {
+                form.style.display = "block";
             }
-        </script>
-
+        }
+    </script>
 
 </body>
 

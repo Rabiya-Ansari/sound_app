@@ -14,7 +14,7 @@ if (isset($_GET['delete'])) {
 
     mysqli_query($con, "DELETE FROM albums WHERE id=$delete_id");
 
-    $_SESSION['message'] = "album deleted successfully!";
+    $_SESSION['message'] = "Album deleted successfully!";
     $_SESSION['message_type'] = "success";
 
     header("Location: album.php");
@@ -29,7 +29,6 @@ if (isset($_POST['add'])) {
     $language = (int) $_POST['language'];
     $year = (int) $_POST['year'];
 
-
     $image_name = null;
     if (isset($_FILES['image']) && $_FILES['image']['name'] != '') {
         $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -43,8 +42,10 @@ if (isset($_POST['add'])) {
          VALUES ('$name', $artist, $genre, $language, $year, '" . ($image_name ? $image_name : '') . "')"
     );
 
+    $_SESSION['message'] = "Album added successfully!";
+    $_SESSION['message_type'] = "success";
 
-    echo "<script>window.location.href='album.php';</script>";
+    header("Location: album.php");
     exit;
 }
 
@@ -57,9 +58,7 @@ if (isset($_POST['update'])) {
     $language = (int) $_POST['language'];
     $year = (int) $_POST['year'];
 
-
     if (isset($_FILES['image']) && $_FILES['image']['name'] != '') {
-
         $res = mysqli_query($con, "SELECT image FROM albums WHERE id=$id");
         $row = mysqli_fetch_assoc($res);
         if ($row && $row['image'] && file_exists('../media/' . $row['image'])) {
@@ -85,10 +84,13 @@ if (isset($_POST['update'])) {
             $img_sql
          WHERE id=$id"
     );
-    echo "<script>window.location.href='album.php';</script>";
+
+    $_SESSION['message'] = "Album updated successfully!";
+    $_SESSION['message_type'] = "success";
+
+    header("Location: album.php");
     exit;
 }
-
 
 $edit_album = null;
 if (isset($_GET['edit'])) {
@@ -96,7 +98,6 @@ if (isset($_GET['edit'])) {
     $res = mysqli_query($con, "SELECT * FROM albums WHERE id=$id");
     $edit_album = mysqli_fetch_assoc($res);
 }
-
 
 $albums = mysqli_query(
     $con,
@@ -112,11 +113,10 @@ $albums = mysqli_query(
 $artists = mysqli_query($con, "SELECT * FROM artists ORDER BY artist_name ASC");
 $genres = mysqli_query($con, "SELECT * FROM genres ORDER BY genre_name ASC");
 $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name ASC");
-
 ?>
 
-
 <?php include './base/header.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="content-page">
     <div class="content">
@@ -195,7 +195,7 @@ $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name 
 
                         <div class="mb-3">
                             <label class="form-label">Album Image</label>
-                            <input type="file" name="image" class="form-control" required>
+                            <input type="file" name="image" class="form-control" <?= $edit_album ? '' : 'required' ?>>
                             <?php if ($edit_album && $edit_album['image']): ?>
                                 <img src="../media/<?= htmlspecialchars($edit_album['image']) ?>" alt="Album Image"
                                     style="height:100px;margin-top:10px;">
@@ -249,12 +249,9 @@ $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name 
                                         <a href="?edit=<?= $r['id'] ?>" class="btn btn-sm btn-dark">
                                             <i class="ri-pencil-line"></i> Edit
                                         </a>
-
-                                        <a href="?delete=<?= $r['id'] ?>"
-                                            class="btn btn-sm btn-danger delete-btn"
-                                            onclick="return confirm('Are you sure you want to delete this album.');">
+                                        <button class="btn btn-sm btn-danger delete-btn" data-id="<?= $r['id'] ?>">
                                             <i class="ri-delete-bin-line"></i> Delete
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
@@ -268,5 +265,37 @@ $languages = mysqli_query($con, "SELECT * FROM languages ORDER BY language_name 
         </div>
     </div>
 </div>
+
+<script>
+// SweetAlert Delete
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This album will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '?delete=' + id;
+            }
+        })
+    });
+});
+
+// SweetAlert messages
+<?php if (isset($_SESSION['message'])): ?>
+Swal.fire({
+    icon: '<?= $_SESSION['message_type'] ?>',
+    title: '<?= $_SESSION['message'] ?>',
+    timer: 2000,
+    showConfirmButton: false
+});
+<?php unset($_SESSION['message'], $_SESSION['message_type']); endif; ?>
+</script>
 
 <?php include './base/footer.php'; ?>

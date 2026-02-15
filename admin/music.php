@@ -2,9 +2,7 @@
 include "./auth.php";
 include "../config/db_connection.php";
 
-/* =====================
-   DELETE MUSIC
-===================== */
+  // DELETE MUSIC
 if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
 
@@ -24,9 +22,9 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-/* =====================
-   FETCH MUSIC FOR EDIT
-===================== */
+
+  // FETCH MUSIC FOR EDIT
+
 $edit_music = null;
 if (isset($_GET['edit'])) {
     $edit_id = (int) $_GET['edit'];
@@ -34,9 +32,9 @@ if (isset($_GET['edit'])) {
     $edit_music = mysqli_fetch_assoc($res);
 }
 
-/* =====================
-   ADD / UPDATE MUSIC
-===================== */
+
+ //  ADD / UPDATE MUSIC
+
 if (isset($_POST['save_music'])) {
 
     $title = mysqli_real_escape_string($con, $_POST['title']);
@@ -105,9 +103,9 @@ if (isset($_POST['save_music'])) {
     }
 }
 
-/* =====================
-   FETCH DATA
-===================== */
+
+//   FETCH DATA
+
 $musics = mysqli_query($con, "
     SELECT musics.*, 
            artists.artist_name, 
@@ -128,8 +126,6 @@ $genres_res = mysqli_query($con, "SELECT * FROM genres ORDER BY genre_name ASC")
 ?>
 
 <?php include "./base/header.php"; ?>
-
-<!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <?php if (isset($_SESSION['message'])): ?>

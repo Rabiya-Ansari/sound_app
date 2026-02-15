@@ -23,8 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validation
     if ($name === '' || $email === '' || $password === '') {
         $error = "All fields are required.";
-    } 
-    else {
+    } else {
         // CHECK DUPLICATE EMAIL
         $checkSql = "SELECT id FROM users WHERE email = ?";
         $stmt = mysqli_prepare($con, $checkSql);
@@ -35,8 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (mysqli_stmt_num_rows($stmt) > 0) {
             $error = "Admin with this email already exists.";
             mysqli_stmt_close($stmt);
-        } 
-        else {
+        } else {
             mysqli_stmt_close($stmt);
             // CREATE ADMIN
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);

@@ -24,8 +24,6 @@ if (!$users) {
                 <h4 class="mb-0">Users List</h4>
                 <a href="add_admin.php" class="btn btn-primary">Add Admin</a>
             </div>
-
-            <!-- Responsive wrapper added -->
             <div class="card shadow-sm border-0">
                 <div class="card-body p-0">
                     <div class="table-responsive">

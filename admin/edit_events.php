@@ -17,7 +17,7 @@ if (isset($_POST['update'])) {
     $location = mysqli_real_escape_string($con, $_POST['location']);
     $date = $_POST['event_date'];
 
-    $imgName = $event['image']; // Keep old image by default
+    $imgName = $event['image'];
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $imgName = time() . '_' . basename($_FILES['image']['name']);
@@ -52,7 +52,7 @@ if (isset($_POST['update'])) {
 
 <?php include "./base/header.php"; ?>
 
-<!-- Main content wrapper to avoid sidebar overlap -->
+<!-- Main Edit -->
 <div class="main-content" style="margin-left: 250px; padding: 20px;">
     <div class="container mt-4">
         <h3>Edit Event</h3>

@@ -18,7 +18,6 @@ $events = mysqli_query($con, "SELECT * FROM events ORDER BY event_date DESC");
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-2">
-            <!-- Sidebar content here -->
         </div>
 
         <!-- Main content -->
