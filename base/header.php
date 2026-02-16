@@ -11,11 +11,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="DJoz Template">
-    <meta name="keywords" content="DJoz, unica, creative, html">
+    <meta name="description" content="Musify Template">
+    <meta name="keywords" content="Musify, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>DJoz | Template</title>
+    <title>Musify | Template</title>
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
@@ -37,6 +37,25 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="/sound/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="/sound/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/sound/css/style.css" type="text/css">
+    <style>
+        .header__logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .logo-text span {
+            color: #a259ff;
+        }
+    </style>
 </head>
 
 <body>
@@ -51,7 +70,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="row">
                 <div class="col-lg-2 col-md-2">
                     <div class="header__logo">
-                        <a href="./index.php"><img src="img/logo.png" alt=""></a>
+                        <h1 class="logo-text">Musify</h1>
                     </div>
                 </div>
                 <div class="col-lg-10 col-md-10">

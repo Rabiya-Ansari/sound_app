@@ -131,18 +131,13 @@ if (isset($_POST['update_video'])) {
     exit;
 }
 
-/* =====================
-   FETCH SELECT DATA
-===================== */
+//   FETCH SELECT DATA
 $artists = mysqli_query($con, "SELECT * FROM artists");
 $genres = mysqli_query($con, "SELECT * FROM genres");
 $languages = mysqli_query($con, "SELECT * FROM languages");
 $years_res = mysqli_query($con, "SELECT * FROM years ORDER BY release_year DESC");
 
-
-/* =====================
-   FETCH VIDEOS
-===================== */
+//   FETCH VIDEOS
 $videos = mysqli_query($con, "
     SELECT videos.*, artists.artist_name, genres.genre_name, languages.language_name
     FROM videos

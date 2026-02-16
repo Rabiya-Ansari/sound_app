@@ -4,37 +4,35 @@ include "./config/db_connection.php";
 $search = "";
 $where = "";
 
-if (isset($_GET['query']) && trim($_GET['query']) != "") {
-    $search = mysqli_real_escape_string($con, $_GET['query']);
-    $where = "WHERE 
+/* SEARCH FILTER */
+if (!empty($_GET['query'])) {
+
+    $search = mysqli_real_escape_string($con, trim($_GET['query']));
+
+    $where = " WHERE 
         videos.title LIKE '%$search%' OR
         artists.artist_name LIKE '%$search%' OR
-        videos.release_year LIKE '%$search%'";
+        videos.release_year LIKE '%$search%' ";
 }
 
-// Check if query exists in GET
-if (isset($_GET['query']) && trim($_GET['query']) != "") {
-    $search = mysqli_real_escape_string($con, $_GET['query']);
-    $where = "WHERE 
-        videos.title LIKE '%$search%' OR
-        artists.artist_name LIKE '%$search%' OR
-        videos.release_year LIKE '%$search%'";
-}
-
-// Fetch videos
-$videos = mysqli_query($con, "
+/* FETCH VIDEOS */
+$sql = "
     SELECT 
-        videos.*, 
-        artists.artist_name
+        videos.id,
+        videos.title,
+        videos.release_year,
+        videos.video_file,
+        IFNULL(artists.artist_name, 'Unknown Artist') AS artist_name
     FROM videos
     LEFT JOIN artists ON artists.id = videos.artist_id
     $where
     ORDER BY videos.id DESC
-");
+";
+
+$videos = mysqli_query($con, $sql);
 
 include 'base/header.php';
 ?>
-
 
 <section class="videos spad">
     <div class="container">
@@ -44,8 +42,6 @@ include 'base/header.php';
             <h2 style="color:#6f42c1;">Video Collection</h2>
             <h1>All Videos</h1>
         </div>
-
-        <!-- Search Box -->
         <div class="row mb-5">
             <div class="col-lg-6 mx-auto">
                 <form id="searchForm" method="GET" action="videos.php">
@@ -67,21 +63,26 @@ include 'base/header.php';
                 <?php while ($video = mysqli_fetch_assoc($videos)): ?>
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card shadow-sm" style="border:1px solid #6f42c1; cursor:pointer;"
-                            onclick="openVideo('<?= $video['video_file'] ?>')" data-toggle="modal" data-target="#videoModal">
-
+                            onclick="openVideo('<?= htmlspecialchars($video['video_file']) ?>')" data-toggle="modal"
+                            data-target="#videoModal">
                             <div
-                                style="height:220px; display:flex; align-items:center; justify-content:center; background:#f8f9fa;">
-                                <span style="font-size:40px; color:#6f42c1;">
-                                    <i class="fa fa-play-circle"></i>
-                                </span>
+                                style="height:220px; overflow:hidden; background:#f8f9fa; display:flex; align-items:center; justify-content:center;">
+                                <?php if (file_exists("media/" . $video['video_file'])): ?>
+                                    <video width="100%" height="220" muted playsinline style="object-fit:cover;">
+                                        <source src="media/<?= htmlspecialchars($video['video_file']) ?>" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                <?php else: ?>
+                                    <span style="font-size:40px; color:#6f42c1;">
+                                        <i class="fa fa-play-circle"></i>
+                                    </span>
+                                <?php endif; ?>
                             </div>
-
                             <div class="card-body text-center">
                                 <h5><?= htmlspecialchars($video['title']) ?></h5>
                                 <p><strong>Artist:</strong> <?= htmlspecialchars($video['artist_name']) ?></p>
-                                <p><strong>Year:</strong> <?= $video['release_year'] ?></p>
+                                <p><strong>Year:</strong> <?= htmlspecialchars($video['release_year']) ?></p>
                             </div>
-
                         </div>
                     </div>
                 <?php endwhile; ?>
@@ -91,10 +92,12 @@ include 'base/header.php';
                 </div>
             <?php endif; ?>
         </div>
+
+
     </div>
 </section>
 
-<!-- MODAL -->
+<!-- VIDEO MODAL -->
 <div class="modal fade" id="videoModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -108,36 +111,36 @@ include 'base/header.php';
 </div>
 
 <script>
-    function openVideo(url) {
+    function openVideo(filename) {
+
         var container = document.getElementById("videoContainer");
 
-        // Only play MP4 videos
-        if (url.endsWith(".mp4")) {
+        if (filename && filename.endsWith(".mp4")) {
+
             container.innerHTML =
                 '<video width="100%" height="400" controls autoplay>' +
-                '<source src="' + url + '" type="video/mp4">' +
+                '<source src="media/' + filename + '" type="video/mp4">' +
+                'Your browser does not support the video tag.' +
                 '</video>';
+
         } else {
+
             container.innerHTML =
-                '<p style="color:red;">This video format is not supported.</p>';
+                '<p style="color:red;">Video file not found.</p>';
         }
     }
 
-    // Stop video when modal closes
     $('#videoModal').on('hidden.bs.modal', function () {
         $('#videoContainer').html('');
     });
 </script>
 <script>
-    // Automatically remove query params on page refresh
     if (window.location.search.length > 0) {
-        // Only remove if page is loaded without submitting form
+
         if (!window.location.hash.includes("searched")) {
             window.history.replaceState({}, document.title, "videos.php");
         }
     }
-
-    // Optional: mark URL when search is performed
     document.getElementById("searchForm").addEventListener("submit", function () {
         window.location.hash = "searched";
     });

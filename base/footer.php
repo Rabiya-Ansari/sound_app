@@ -13,14 +13,14 @@
                             <li>
                                 <i class="fa fa-envelope"></i>
                                 <p>Email</p>
-                                <h6>DJ.Music@gmail.com</h6>
+                                <h6>Musify.Music@gmail.com</h6>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-4 offset-lg-1 col-md-6">
                     <div class="footer__social">
-                        <h2>DJoz</h2>
+                        <h2>Musify</h2>
                         <div class="footer__social__links">
                             <a href="#"><i class="fa fa-facebook"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>

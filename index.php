@@ -44,11 +44,11 @@ $tracks = mysqli_query($con, "
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="DJoz Template">
-    <meta name="keywords" content="DJoz, unica, creative, html">
+    <meta name="description" content="Musify Template">
+    <meta name="keywords" content="Musify, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>DJoz | Template</title>
+    <title>Musify | Template</title>
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 
@@ -77,7 +77,23 @@ $tracks = mysqli_query($con, "
     <link rel="stylesheet" href="/sound/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/sound/css/style.css" type="text/css">
     <style>
-        
+        .header__logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .logo-text span {
+            color: #a259ff;
+        }
     </style>
 </head>
 
@@ -93,7 +109,7 @@ $tracks = mysqli_query($con, "
             <div class="row">
                 <div class="col-lg-2 col-md-2">
                     <div class="header__logo">
-                        <a href="./index.php"><img src="img/logo.png" alt=""></a>
+                        <h1 class="logo-text">Musify</h1>
                     </div>
                 </div>
                 <div class="col-lg-10 col-md-10">
@@ -114,8 +130,7 @@ $tracks = mysqli_query($con, "
                                             </a>
                                             <ul class="dropdown-menu">
                                                 <li>
-                                                    <a class="dropdown-item"
-                                                        href="/sound/user/logout.php">
+                                                    <a class="dropdown-item" href="/sound/user/logout.php">
                                                         Logout
                                                     </a>
                                                 </li>
@@ -523,7 +538,6 @@ $tracks = mysqli_query($con, "
             </div>
             <div class="row">
                 <?php
-                include "./config/db_connection.php";
 
                 $albums_query = "
                 SELECT albums.*, artists.artist_name
@@ -537,15 +551,18 @@ $tracks = mysqli_query($con, "
                     while ($album = mysqli_fetch_assoc($albums)) {
                         ?>
                         <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="album__item">
-                                <div class="album__item__pic">
-                                    <img src="media/<?php echo $album['image']; ?>" alt="" class="img-fluid">
+                            <a href="musics.php?album_id=<?php echo $album['id']; ?>"
+                                style="text-decoration: none; color: inherit;">
+                                <div class="album__item">
+                                    <div class="album__item__pic">
+                                        <img src="media/<?php echo $album['image']; ?>" alt="" class="img-fluid">
+                                    </div>
+                                    <div class="album__item__text">
+                                        <h4><?php echo $album['album_name']; ?></h4>
+                                        <p><?php echo $album['artist_name']; ?> | <?php echo $album['release_year']; ?></p>
+                                    </div>
                                 </div>
-                                <div class="album__item__text">
-                                    <h4><?php echo $album['album_name']; ?></h4>
-                                    <p><?php echo $album['artist_name']; ?> | <?php echo $album['release_year']; ?></p>
-                                </div>
-                            </div>
+                            </a>
                         </div>
                         <?php
                     }
@@ -689,14 +706,14 @@ $tracks = mysqli_query($con, "
                             <li>
                                 <i class="fa fa-envelope"></i>
                                 <p>Email</p>
-                                <h6>DJ.Music@gmail.com</h6>
+                                <h6>Musify.Music@gmail.com</h6>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-4 offset-lg-1 col-md-6">
                     <div class="footer__social">
-                        <h2>DJoz</h2>
+                        <h2>Musify</h2>
                         <div class="footer__social__links">
                             <a href="#"><i class="fa fa-facebook"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>

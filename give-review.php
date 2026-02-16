@@ -13,8 +13,6 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// VALIDATE TARGET
-
 $type = $_GET['type'] ?? '';
 $item_id = (int) ($_GET['id'] ?? 0);
 
@@ -66,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         mysqli_stmt_execute($stmt);
 
-        header("Location: musics.php?review=success");
+        header("Location: index.php?review=success");
         exit;
     }
 }
@@ -83,12 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         --text-muted: #bcbcbc;
     }
 
-    /* Card container */
     .container.card-theme {
         max-width: 600px;
     }
 
-    /* Card styling */
     .card-theme .card {
         background-color: var(--card-bg);
         border: none;
@@ -96,17 +92,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         border-radius: 0.5rem;
     }
 
-    /* Headings */
     .card-theme h4 {
         color: var(--primary);
     }
 
-    /* Labels */
     .card-theme label {
         color: var(--text-light);
     }
 
-    /* Select and textarea */
     .card-theme select.form-control,
     .card-theme textarea.form-control {
 
@@ -117,23 +110,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         color: var(--text-light);
     }
 
-    /* Button */
     .card-theme .btn-primary {
         background-color: var(--primary);
         border-color: var(--primary);
         font-weight: bold;
         transition: background-color 0.3s ease;
     }
+
     .card-theme .btn-primary:hover {
         background-color: #580f9c;
         border-color: #580f9c;
     }
+
     .card-theme .alert-danger {
         background-color: #7a1a2e;
         color: var(--text-light);
         border: none;
     }
-    textarea{
+
+    textarea {
         resize: none;
     }
 </style>
