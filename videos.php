@@ -70,7 +70,6 @@ include 'base/header.php';
                                 <?php if (file_exists("media/" . $video['video_file'])): ?>
                                     <video width="100%" height="220" muted playsinline style="object-fit:cover;">
                                         <source src="media/<?= htmlspecialchars($video['video_file']) ?>" type="video/mp4">
-                                        Your browser does not support the video tag.
                                     </video>
                                 <?php else: ?>
                                     <span style="font-size:40px; color:#6f42c1;">
@@ -79,10 +78,24 @@ include 'base/header.php';
                                 <?php endif; ?>
                             </div>
                             <div class="card-body text-center">
+
                                 <h5><?= htmlspecialchars($video['title']) ?></h5>
-                                <p><strong>Artist:</strong> <?= htmlspecialchars($video['artist_name']) ?></p>
-                                <p><strong>Year:</strong> <?= htmlspecialchars($video['release_year']) ?></p>
+
+                                <p><strong>Artist:</strong>
+                                    <?= htmlspecialchars($video['artist_name']) ?>
+                                </p>
+
+                                <p><strong>Year:</strong>
+                                    <?= htmlspecialchars($video['release_year']) ?>
+                                </p>
+
+                                <a href="give-review.php?type=video&id=<?= $video['id'] ?>" class="btn btn-sm mt-2 hover-purple"
+                                    style="font-weight:bold;">
+                                    Give Review
+                                </a>
+
                             </div>
+
                         </div>
                     </div>
                 <?php endwhile; ?>

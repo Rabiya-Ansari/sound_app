@@ -32,7 +32,7 @@ $tracks = mysqli_query($con, "
 include './base/header.php';
 ?>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 
 <div class="container mt-5 mb-5">
     <div class="text-center mb-4">
