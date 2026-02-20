@@ -63,7 +63,7 @@ include './base/header.php';
         <?php if (mysqli_num_rows($tracks) > 0): ?>
             <?php while ($m = mysqli_fetch_assoc($tracks)): ?>
                 <div class="col d-flex">
-                    <div class="card flex-fill p-3" style="border: 1px solid lightslategray; box-shadow: 0 5px 15px #6f42c1;">
+                    <div class="card flex-fill p-3" style="border: 1px solid #6f42c1; box-shadow: 0 5px 15px #6f42c1;">
 
                         <div class="d-flex align-items-center mb-2">
                             <?php if (!empty($m['artist_image']) && file_exists("media/" . $m['artist_image'])): ?>

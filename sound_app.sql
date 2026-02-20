@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 14, 2026 at 10:11 PM
+-- Generation Time: Feb 20, 2026 at 11:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,7 +51,7 @@ INSERT INTO `albums` (`id`, `album_name`, `artist_id`, `genre_id`, `language_id`
 (14, 'Beautiful Life', 28, 16, 1, 2018, NULL, 'album_6990d0d56abc1.jpg'),
 (15, 'Different World', 21, 15, 1, 2018, NULL, 'album_6990d1619e6ef.jpg'),
 (16, 'World of Walker', 21, 15, 1, 2021, NULL, 'album_6990d19d7216c.jpg'),
-(17, 'Raabta', 35, 9, 13, 2017, NULL, 'album_6990e2af1537b.jpg');
+(17, 'Raabta', 35, 9, 13, 2017, NULL, 'album_699246c62833a.jpg');
 
 -- --------------------------------------------------------
 
@@ -92,7 +92,8 @@ INSERT INTO `artists` (`id`, `artist_name`, `artist_image`) VALUES
 (32, 'Hilzu', '1771075788_8109.jpg'),
 (33, 'Lady Gaga', '1771075895_2329.jpg'),
 (34, 'Micheal Jackson', '1771075964_1629.jpg'),
-(35, 'Atif Aslam', '1771102797_5055.jpg');
+(35, 'Atif Aslam', '1771102797_5055.jpg'),
+(36, 'Arijit Singh', '1771261951_6700.jpg');
 
 -- --------------------------------------------------------
 
@@ -154,13 +155,13 @@ INSERT INTO `genres` (`id`, `genre_name`) VALUES
 (9, 'Multi-Genre'),
 (10, 'Desi Hip Hop'),
 (11, 'Melodic'),
-(12, 'Rap'),
 (13, 'Dance'),
 (14, 'Afrobeats'),
 (15, 'Electronic'),
 (16, 'Pop'),
 (17, 'Hip-hop / Rap rock'),
-(18, 'Pop / Dance-pop');
+(18, 'Pop / Dance-pop'),
+(19, 'Rap');
 
 -- --------------------------------------------------------
 
@@ -269,7 +270,19 @@ INSERT INTO `reviews` (`id`, `user_id`, `item_type`, `item_id`, `review`, `creat
 (10, 23, '', 0, 'gfghfdgh', '2026-02-14 12:32:44', 4),
 (11, 23, '', 0, 'gfgjhg', '2026-02-14 12:32:58', 2),
 (12, 23, '', 0, 'bvhvhbn', '2026-02-14 12:33:11', 2),
-(13, 23, '', 0, 'bnm,nknm,n', '2026-02-14 12:33:22', 3);
+(13, 23, '', 0, 'bnm,nknm,n', '2026-02-14 12:33:22', 3),
+(14, 23, 'music', 67, 'mnjlhj', '2026-02-15 20:00:31', 5),
+(15, 23, 'music', 66, 'rhtrhtjrhwhwrt', '2026-02-15 20:01:06', 4),
+(16, 23, 'music', 71, 'Thats song is really good', '2026-02-15 20:01:26', 3),
+(17, 23, 'music', 71, 'All song are good .', '2026-02-15 22:27:09', 5),
+(18, 23, 'music', 71, 'All song are good .', '2026-02-15 22:28:02', 5),
+(19, 23, 'music', 71, 'good', '2026-02-15 22:28:17', 3),
+(20, 23, 'music', 70, 'all good', '2026-02-15 22:29:44', 5),
+(21, 23, 'music', 70, 'thats good', '2026-02-15 22:56:25', 4),
+(22, 23, 'music', 70, 'All good', '2026-02-15 22:58:18', 5),
+(23, 23, 'music', 70, 'Happy users', '2026-02-15 22:58:48', 5),
+(24, 1, 'music', 70, 'All Good', '2026-02-16 18:22:13', 2),
+(25, 1, 'music', 71, 'All Good', '2026-02-16 18:23:21', 5);
 
 -- --------------------------------------------------------
 
@@ -319,45 +332,39 @@ CREATE TABLE `videos` (
 --
 
 INSERT INTO `videos` (`id`, `title`, `artist_id`, `genre_id`, `language_id`, `release_year`, `video_file`) VALUES
-(18, 'Dunki O Maahi', 1, 4, 10, 2023, '1771004684_Dunki__O_Maahi__Full_Video.mp4'),
-(19, 'Gerua', 1, 9, 10, 2015, '1771004797_Gerua_.mp4'),
-(20, 'Humdard', 1, 4, 10, 2014, '1771004830_Humdard.mp4'),
-(21, 'jawan', 1, 4, 10, 2023, '1771004876_JAWAN_.mp4'),
-(22, 'khairiyat', 1, 4, 10, 2019, '1771004915_KHAIRIYAT.mp4'),
-(23, 'Pehli Dafa', 3, 4, 9, 2017, '1771004994_Atif_Aslam__Pehli_Dafa_Song.mp4'),
-(24, 'Dil Diyan Gallan', 3, 4, 9, 2017, '1771005044_Dil_Diyan_Gallan_Song__.mp4'),
-(25, 'Hona tha Pyar', 3, 4, 9, 2011, '1771005079_Hona_Tha_Pyar_.mp4'),
-(26, 'Moonrise', 3, 9, 9, 2022, '1771005114_Moonrise_.mp4'),
-(27, 'Rafta Rafta', 3, 9, 9, 2021, '1771005153_Rafta_Rafta_-_Official.mp4'),
-(28, 'Gone girl', 2, 8, 10, 2023, '1771005402_Badshah_-_Gone_Girl.mp4'),
-(29, 'Jugnu', 2, 4, 10, 2021, '1771005484_Badshah_-_Jugnu__Official.mp4'),
-(30, 'Mercy', 2, 8, 10, 2017, '1771005564_Mercy_-_Badshah_Feat..mp4'),
-(31, 'Morni', 2, 9, 10, 2024, '1771005621_Morni__Official_Video____Badshah.mp4'),
-(32, 'O Sajna', 2, 10, 10, 2024, '1771005656_O_Sajna__Official_Video__-_Badshah.mp4'),
-(33, '6 AM', 4, 4, 10, 2025, '1771005783_6_AM__Official_Video___YO_YO_HONEY_SINGH.mp4'),
-(34, 'Blue Eyes', 4, 10, 10, 2013, '1771005841_Blue_Eyes_Full_Video_Song_Yo_Yo_Honey_Singh___Blockbuster_Song_Of_2013(360p).mp4'),
-(35, 'Exclusive', 4, 8, 10, 2025, '1771005964_Exclusive__LOVE_DOSE_Full_Video_Song___Yo_Yo_Honey_Singh,_Urvashi_Rautela___Desi_Kalakaar(360p).mp4'),
-(36, 'Payal', 4, 9, 10, 2024, '1771005998_PAYAL_SONG__Official_Video___YO_YO_HONEY_SINGH___NORA_FATEHI___PARADOX___GLORY___BHUSHAN_KUMAR(360p).mp4'),
-(37, 'Dil Chori', 4, 11, 10, 2017, '1771006060_Yo_Yo_Honey_Singh__DIL_CHORI__Video__Simar_Kaur,_Ishers___Hans_Raj_Hans___Sonu_Ke_Titu_Ki_Sweety(360p).mp4'),
-(38, 'Afsanay', 17, 12, 9, 2021, '1771006222_AFSANAY_-_Young_Stunners___Talhah_Yunus___Talha_Anjum___Prod._By_Jokhay__Official_Music_Video_(360p).mp4'),
-(39, 'Downers at Dusk', 17, 12, 9, 2023, '1771006285_Downers_At_Dusk_-_Talha_Anjum___Prod._by_Umair__Official_Music_Video_(360p).mp4'),
-(40, 'Gumaan', 17, 12, 9, 2020, '1771006314_GUMAAN_-_Young_Stunners___Talha_Anjum___Talhah_Yunus___Prod._By_Jokhay__Official_Music_Video_(360p).mp4'),
-(42, 'Heartbreak Kid', 17, 12, 9, 2024, '1771006428_Talha_Anjum_-_Heartbreak_Kid___Prod._by_Umair__Official_Music_Video_(360p).mp4'),
-(43, 'Eric', 18, 1, 8, 2014, '1771007471_Eric.mp4'),
-(44, 'Eric 2', 18, 1, 8, 2016, '1771007513_Eric (2).mp4'),
-(45, 'A little Happiness', 19, 2, 8, 2015, '1771007607__A_Little_HappinesOfficial_MV.mp4'),
-(46, 'EMO', 20, 11, 8, 2024, '1771007709_EMO.mp4'),
-(47, 'G.E.M', 20, 9, 8, 2016, '1771007791_G.E.M..mp4'),
-(48, 'Alone', 21, 13, 1, 2016, '1771008185_Alan_Walker.mp4'),
-(49, 'baby calm down', 22, 14, 1, 2022, '1771008268_Baby_Calm_Down.mp4'),
-(50, 'Levitating', 23, 1, 1, 2020, '1771008373_Dua_Lipa_.mp4'),
-(51, 'How you like that', 24, 11, 1, 2020, '1771008478_ROSE.mp4'),
-(52, 'We Own it', 25, 9, 1, 2013, '1771008563_Wiz_Khalifa.mp4'),
-(53, '295', 26, 10, 5, 2021, '1771008635_295__Official.mp4'),
-(54, 'GOAT', 27, 4, 5, 2020, '1771008701_Diljit_Dosanjh_.mp4'),
-(55, 'GOAT', 26, 10, 5, 2021, '1771008751_GOAT_.mp4'),
-(56, 'Jatti Jeone Morh Wargi', 26, 10, 5, 2019, '1771008830_Jatti_Jeone_Morh_Wargi.mp4'),
-(57, 'lehenga', 27, 8, 5, 2019, '1771008893_LEHNGA___DILJIT_DOSANJH__.mp4');
+(19, 'Gerua', 36, 9, 10, 2015, '1771262024_Gerua_.mp4'),
+(20, 'Humdard', 36, 4, 10, 2014, '1771262004_Humdard.mp4'),
+(21, 'jawan', 36, 4, 10, 2023, '1771261986_JAWAN_.mp4'),
+(22, 'khairiyat', 27, 4, 10, 2019, '1771261857_KHAIRIYAT.mp4'),
+(23, 'Pehli Dafa', 35, 4, 9, 2017, '1771261546_Atif_Aslam__Pehli_Dafa_Song.mp4'),
+(24, 'Dil Diyan Gallan', 35, 4, 9, 2017, '1771261526_Dil_Diyan_Gallan_Song__.mp4'),
+(25, 'Hona tha Pyar', 35, 4, 9, 2011, '1771263907_Morni__Official_Video____Badshah.mp4'),
+(26, 'Moonrise', 35, 9, 9, 2022, '1771261473_Moonrise_.mp4'),
+(27, 'Rafta Rafta', 35, 9, 9, 2021, '1771261415_Rafta_Rafta_-_Official.mp4'),
+(33, '6 AM', 4, 4, 10, 2025, '1771261099_6_AM__Official_Video___YO_YO_HONEY_SINGH.mp4'),
+(34, 'Blue Eyes', 4, 10, 10, 2013, '1771261083_PAYAL_SONG__Official_Video___YO_YO_HONEY_SINGH___NORA_FATEHI___PARADOX___GLORY___BHUSHAN_KUMAR(360p).mp4'),
+(35, 'Exclusive', 4, 8, 10, 2025, '1771261062_Exclusive__LOVE_DOSE_Full_Video_Song___Yo_Yo_Honey_Singh,_Urvashi_Rautela___Desi_Kalakaar(360p).mp4'),
+(36, 'Payal', 4, 9, 10, 2024, '1771254908_Yo_Yo_Honey_Singh__DIL_CHORI__Video__Simar_Kaur,_Ishers___Hans_Raj_Hans___Sonu_Ke_Titu_Ki_Sweety(360p).mp4'),
+(37, 'Dil Chori', 4, 11, 10, 2017, '1771254882_AFSANAY_-_Young_Stunners___Talhah_Yunus___Talha_Anjum___Prod._By_Jokhay__Official_Music_Video_(360p).mp4'),
+(38, 'Afsanay', 17, 12, 9, 2021, '1771254863_Talha_Anjum_-_Heartbreak_Kid___Prod._by_Umair__Official_Music_Video_(360p).mp4'),
+(39, 'Downers at Dusk', 17, 12, 9, 2023, '1771254847_Talha_Anjum_-_Departure_Lane___Prod._by_Umair__Official_Music_Video_(360p).mp4'),
+(40, 'Gumaan', 17, 12, 9, 2020, '1771254810_GUMAAN_-_Young_Stunners___Talha_Anjum___Talhah_Yunus___Prod._By_Jokhay__Official_Music_Video_(360p).mp4'),
+(42, 'Heartbreak Kid', 17, 12, 9, 2024, '1771254783_Downers_At_Dusk_-_Talha_Anjum___Prod._by_Umair__Official_Music_Video_(360p).mp4'),
+(43, 'Eric', 18, 1, 8, 2014, '1771254003_Eric.mp4'),
+(44, 'Eric 2', 18, 1, 8, 2016, '1771253913_Eric.mp4'),
+(45, 'A little Happiness', 19, 2, 8, 2015, '1771253894__A_Little_HappinesOfficial_MV.mp4'),
+(46, 'EMO', 20, 11, 8, 2024, '1771253878_EMO.mp4'),
+(47, 'G.E.M', 20, 9, 8, 2016, '1771253724_G.E.M..mp4'),
+(48, 'Alone', 21, 13, 1, 2016, '1771253698_Alan_Walker.mp4'),
+(49, 'baby calm down', 22, 14, 1, 2022, '1771253684_Baby_Calm_Down.mp4'),
+(50, 'Levitating', 23, 1, 1, 2020, '1771253646_Dua_Lipa_.mp4'),
+(51, 'How you like that', 24, 11, 1, 2020, '1771253634_ROSE.mp4'),
+(52, 'We Own it', 25, 9, 1, 2013, '1771253488_Wiz_Khalifa.mp4'),
+(53, '295', 26, 10, 5, 2021, '1771253467_295__Official.mp4'),
+(54, 'GOAT', 27, 4, 5, 2020, '1771253445_GOAT_.mp4'),
+(55, 'GOAT', 26, 10, 5, 2021, '1771253413_Diljit_Dosanjh_.mp4'),
+(56, 'Jatti Jeone Morh Wargi', 26, 10, 5, 2019, '1771253372_Jatti_Jeone_Morh_Wargi.mp4'),
+(57, 'lehenga', 27, 8, 5, 2019, '1771253387_LEHNGA___DILJIT_DOSANJH__.mp4');
 
 -- --------------------------------------------------------
 
@@ -480,7 +487,7 @@ ALTER TABLE `albums`
 -- AUTO_INCREMENT for table `artists`
 --
 ALTER TABLE `artists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -498,7 +505,7 @@ ALTER TABLE `events`
 -- AUTO_INCREMENT for table `genres`
 --
 ALTER TABLE `genres`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `languages`
@@ -516,7 +523,7 @@ ALTER TABLE `musics`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `users`

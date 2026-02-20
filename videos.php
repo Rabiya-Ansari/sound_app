@@ -62,7 +62,7 @@ include 'base/header.php';
             <?php if (mysqli_num_rows($videos) > 0): ?>
                 <?php while ($video = mysqli_fetch_assoc($videos)): ?>
                     <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card shadow-sm" style="border:1px solid #6f42c1; cursor:pointer;"
+                        <div class="card " style="border:1px solid #6f42c1; box-shadow: 0 5px 15px #6f42c1; cursor:pointer;"
                             onclick="openVideo('<?= htmlspecialchars($video['video_file']) ?>')" data-toggle="modal"
                             data-target="#videoModal">
                             <div
